@@ -18,34 +18,41 @@ public class Game
 	public Game()
 	{
 		Configuration.seed = 0;
+
+		// Generate the two maps for the players
 		LevelGenerator levelGenerator = new LevelGenerator();
 		player1MapDefense = levelGenerator.GenerateLevel(Configuration.seed + 1);
 		player2MapDefense = levelGenerator.GenerateLevel(Configuration.seed - 1);
-		
+
+		// Initialize the attack maps for both players
 		player1MapAttack = new int[Configuration.size, Configuration.size];
 		player2MapAttack = new int[Configuration.size, Configuration.size];
 	}
 
 	public void Start()
 	{
+		// Welcome the user and prompt them to start the game
 		Console.WriteLine("Welcome to Sea Battle!");
 		Console.WriteLine("Press any key to start the game.");
 		Console.WriteLine("You can skip your turn by pressing enter.");
 		Console.ReadKey();
 		Console.Clear();
 		
-		
+		// Loop until the game is over
 		while (CanGameRun())
 		{
+			// Draw the maps
 			DrawMap(player1MapDefense);
 			Console.WriteLine();
 			DrawMap(player1MapAttack);
 			
+			// If it is the player's turn, then the player takes their turn
 			if (isPlayer1Turn)
 			{
 				PlayerTurn();
 				isPlayer1Turn = false;
 			}
+			// Otherwise, the enemy takes their turn
 			else
 			{
 				EnemyTurn();
@@ -61,7 +68,7 @@ public class Game
 		Random random = new Random();
 		int x = random.Next(Configuration.size);
 		int y = random.Next(Configuration.size);
-		while (player1MapDefense[x, y] == 6)
+		while (player1MapDefense[x, y] == 6 || player1MapDefense[x, y] == 5)
 		{
 			x = random.Next(Configuration.size);
 			y = random.Next(Configuration.size);
@@ -104,6 +111,7 @@ public class Game
 	private void PlayerTurn()
 	{
 		Vector2 input = ReadInput();
+
 		if (input.X == -1 && input.Y == -1 || input.X > Configuration.size || input.Y > Configuration.size)
 		{
 			Console.WriteLine("Invalid input");
@@ -113,20 +121,23 @@ public class Game
 			int x = (int) input.X;
 			int y = (int) input.Y;
 
-			// check if we hit a ship, if so, mark it as hit (5), if not, mark it as miss (6)
-			if (GetShipType(new Vector2(x, y), player2MapDefense) != Configuration.Ships.None)
-			{
-				player2MapDefense[x, y] = 5;
-				player1MapAttack[x, y] = 5;
-			}
-			else
-			{
-				player2MapDefense[x, y] = 6;
-				player1MapAttack[x, y] = 6;
-			}
+			CheckHitOrMiss(x, y);
 		}
 
 		Console.Clear();
+	}
+
+	private void CheckHitOrMiss(int x, int y)
+	{
+		if (GetShipType(new Vector2(x, y), player2MapDefense) != Configuration.Ships.None)
+		{
+			HitShip(x, y, player2MapDefense, player1MapAttack);
+		}
+		else
+		{
+			player2MapDefense[x, y] = 6;
+			player1MapAttack[x, y] = 6;
+		}
 	}
 
 	private Vector2 ReadInput()
@@ -234,15 +245,15 @@ public class Game
 						@char = "H";
 						color = ConsoleColor.Magenta;
 						break;
-					// miss
-					case 5:
-						@char = "0";
-						color = ConsoleColor.DarkYellow;
-						break;
 					// hit
-					case 6:
+					case 5:
 						@char = "X";
 						color = ConsoleColor.Red;
+						break;
+					// miss
+					case 6:
+						@char = "x";
+						color = ConsoleColor.DarkYellow;
 						break;
 					default:
 						@char = " ";
@@ -319,50 +330,14 @@ public class Game
 	}
 	private bool IsShipDestroyed(Vector2 coords, int[,] defenseMap)
 	{
-		Configuration.Ships shipType = GetShipType(coords, defenseMap);
-		if (shipType == Configuration.Ships.None)
-		{
-			return false;
-		}
-    
+		int shipSize = (int)GetShipType(coords, defenseMap);
 		int x = (int)coords.X;
 		int y = (int)coords.Y;
-    
-		int size = (int)shipType;
-    
-		if (size == 1) // small ship, check only the current cell
-		{
-			return defenseMap[x, y] == 5;
-		}
-		else if (size == 2) // medium ship, check current and adjacent cells
-		{
-			bool vertical = (x > 0 && defenseMap[x - 1, y] == 5) || (x < defenseMap.GetLength(0) - 1 && defenseMap[x + 1, y] == 5);
-			bool horizontal = (y > 0 && defenseMap[x, y - 1] == 5) || (y < defenseMap.GetLength(1) - 1 && defenseMap[x, y + 1] == 5);
-			if (vertical || horizontal)
-			{
-				for (int i = -1; i <= 1; i++)
-				{
-					if (x + i >= 0 && x + i < defenseMap.GetLength(0) && defenseMap[x + i, y] != 5)
-					{
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-		else // large or huge ship, check if all cells are hit
-		{
-			for (int i = 0; i < size; i++)
-			{
-				if (x + i >= defenseMap.GetLength(0) || defenseMap[x + i, y] != 5)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-    
+
+		
 		return false;
 	}
+
+
 
 }

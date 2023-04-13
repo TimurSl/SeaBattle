@@ -19,7 +19,8 @@ public class Configuration
 		Large = 3,
 		Huge = 4,
 		
-		None = 0
+		None = 0,
+		Destroyed = 5,
 	}
 	
 }
