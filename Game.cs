@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Text.RegularExpressions;
+using SeaBattle.Players;
 
 namespace SeaBattle;
 
@@ -13,6 +14,10 @@ public class Game
 	int[,] player2MapAttack;
 	
 	bool isPlayer1Turn = true;
+
+
+	private IPlayer player1 = new Player();
+	private IPlayer player2 = new Bot();
 	
 
 	public Game()
@@ -31,10 +36,9 @@ public class Game
 
 	public void Start()
 	{
-		// Welcome the user and prompt them to start the game
-		Console.WriteLine("Welcome to Sea Battle!");
-		Console.WriteLine("Press any key to start the game.");
-		Console.WriteLine("You can skip your turn by pressing enter.");
+		Console.WriteLine(Figgle.FiggleFonts.Doom.Render("Sea Battle"));
+		WelcomeMessage();
+
 		Console.ReadKey();
 		Console.Clear();
 		
@@ -49,119 +53,55 @@ public class Game
 			// If it is the player's turn, then the player takes their turn
 			if (isPlayer1Turn)
 			{
-				PlayerTurn();
+				IntegerVector2 target = player1.GetTarget(player2MapDefense);
+				
+				if (target != new IntegerVector2(-1, -1))
+				{
+					int x = (int) target.X;
+					int y = (int) target.Y;
+
+					HitShip(target, player2MapDefense, player1MapAttack);
+				}
+				
 				isPlayer1Turn = false;
 			}
 			// Otherwise, the enemy takes their turn
 			else
 			{
-				EnemyTurn();
+				IntegerVector2 target = player2.GetTarget(player1MapDefense);
+				
+				if (target != new IntegerVector2(-1, -1))
+				{
+					int x = (int) target.X;
+					int y = (int) target.Y;
+
+					HitShip(target, player1MapDefense, player2MapAttack);
+				}
+
 				isPlayer1Turn = true;
 			}
 			Console.Clear();
 		}
 	}
 
-	private void EnemyTurn()
+	private static void WelcomeMessage()
 	{
-		// pick random position what is not miss, if hit, pick random position around it
-		Random random = new Random();
-		int x = random.Next(Configuration.size);
-		int y = random.Next(Configuration.size);
-		while (player1MapDefense[x, y] == 6 || player1MapDefense[x, y] == 5)
-		{
-			x = random.Next(Configuration.size);
-			y = random.Next(Configuration.size);
-		}
-		
-		if (player1MapDefense[x, y] == 5)
-		{
-			// hit, pick random position around it
-			int direction = random.Next(4);
-			switch (direction)
-			{
-				case 0:
-					x++;
-					break;
-				case 1:
-					x--;
-					break;
-				case 2:
-					y++;
-					break;
-				case 3:
-					y--;
-					break;
-			}
-		}
-		
-		// check if we hit a ship, if so, mark it as hit (5), if not, mark it as miss (6)
-		if (GetShipType(new Vector2(x, y), player1MapDefense) != Configuration.Ships.None)
-		{
-			player1MapDefense[x, y] = 5;
-			player2MapAttack[x, y] = 5;
-		}
-		else
-		{
-			player1MapDefense[x, y] = 6;
-			player2MapAttack[x, y] = 6;
-		}
-	}
+		Console.WriteLine("Welcome to Sea Battle!");
+		Console.WriteLine("You can skip your turn by pressing enter.");
+		// help 
+		Console.WriteLine("To attack, enter coordinates in the format A1, B2, C3, etc.");
+		Console.WriteLine();
 
-	private void PlayerTurn()
-	{
-		Vector2 input = ReadInput();
+		Console.ForegroundColor = ConsoleColor.Red;
+		Console.WriteLine("S - small ship");
+		Console.WriteLine("M - medium ship");
+		Console.WriteLine("L - large ship");
+		Console.WriteLine("X - hit");
+		Console.WriteLine("x - miss");
+		Console.WriteLine();
+		Console.ResetColor();
 
-		if (input.X == -1 && input.Y == -1 || input.X > Configuration.size || input.Y > Configuration.size)
-		{
-			Console.WriteLine("Invalid input");
-		}
-		else
-		{
-			int x = (int) input.X;
-			int y = (int) input.Y;
-
-			CheckHitOrMiss(x, y);
-		}
-
-		Console.Clear();
-	}
-
-	private void CheckHitOrMiss(int x, int y)
-	{
-		if (GetShipType(new Vector2(x, y), player2MapDefense) != Configuration.Ships.None)
-		{
-			HitShip(x, y, player2MapDefense, player1MapAttack);
-		}
-		else
-		{
-			player2MapDefense[x, y] = 6;
-			player1MapAttack[x, y] = 6;
-		}
-	}
-
-	private Vector2 ReadInput()
-	{
-		Console.Write("Enter coordinates to attack: ");
-		string input = Console.ReadLine();
-		string pattern = @"^([A-Za-z]+)(\d+)$"; // pattern to match one or more letters followed by one or more digits
-		Match match = Regex.Match(input, pattern);
-		if (!match.Success)
-		{
-			return new Vector2(-1, -1);
-		}
-		else
-		{
-			string column = match.Groups[1].Value.ToUpper();
-			int row = int.Parse(match.Groups[2].Value) - 1;
-			int columnLength = column.Length;
-			int columnNumber = 0;
-			for (int i = 0; i < columnLength; i++)
-			{
-				columnNumber += (column[i] - 'A' + 1) * (int)Math.Pow(26, columnLength - i - 1);
-			}
-			return new Vector2(row, --columnNumber);
-		}
+		Console.WriteLine("Press any key to start the game.");
 	}
 
 
@@ -190,77 +130,25 @@ public class Game
 	{
 		// draw coordinates (A-(level size in letters)) and numbers (1-(level size in numbers)), if levelsize > 26, use 2 letters for coordinates
 		// draw letters
-		Console.BackgroundColor = ConsoleColor.DarkBlue;
-		Console.ForegroundColor = ConsoleColor.White;
-		Console.Write("   |");
+		DrawLetters(map);
+
 		for (int x = 0; x < map.GetLength(0); x++)
 		{
-			Console.Write((char)(x + 65) + "|");
-		}
-		Console.WriteLine();
-		Console.ResetColor();
-		
-		for (int x = 0; x < map.GetLength(0); x++)
-		{
-			Console.BackgroundColor = ConsoleColor.DarkBlue;
-			Console.ForegroundColor = ConsoleColor.White;
-			// if x > 9, draw 1 whitespace, else draw 2 whitespaces
-			if (x+1 > 9)
-			{
-				Console.Write(x+1 + " ");
-			}
-			else
-			{
-				Console.Write(x+1 + "  ");
-			}
-			Console.ResetColor();
-			
+			DrawNumber(x);
+
 			Console.Write("|");
 
 			// numbers
 			for (int y = 0; y < map.GetLength(1); y++)
 			{
 				ConsoleColor color = ConsoleColor.White;
-				string @char = "";
+				char @char = ' ';
 				// draw map
-				switch (map[x,y])
-				{
-					case 0: 
-						@char = " ";
-						color = ConsoleColor.Black;
-						break;
-					case 1:
-						@char = "S";
-						color = ConsoleColor.Yellow;
-						break;
-					case 2:
-						@char = "M";
-						color = ConsoleColor.Blue;
-						break;
-					case 3:
-						@char = "L";
-						color = ConsoleColor.Green;
-						break;
-					case 4:
-						@char = "H";
-						color = ConsoleColor.Magenta;
-						break;
-					// hit
-					case 5:
-						@char = "X";
-						color = ConsoleColor.Red;
-						break;
-					// miss
-					case 6:
-						@char = "x";
-						color = ConsoleColor.DarkYellow;
-						break;
-					default:
-						@char = " ";
-						color = ConsoleColor.Black;
-						break;
-				}
 				
+				// get color and @char from Configuration.PixelMap
+				color = Configuration.PixelMap[map[x, y]].Color;
+				@char = Configuration.PixelMap[map[x, y]].Char;
+
 				Console.ForegroundColor = color;
 				Console.Write(@char);
 				Console.ResetColor();
@@ -271,32 +159,84 @@ public class Game
 		}
 	}
 
+	private static void DrawLetters(int[,] map)
+	{
+		Console.BackgroundColor = ConsoleColor.DarkBlue;
+		Console.ForegroundColor = ConsoleColor.White;
+		Console.Write("   |");
+		for (int x = 0; x < map.GetLength(0); x++)
+		{
+			Console.Write((char) (x + 65) + "|");
+		}
 
-	private Configuration.Ships GetShipType(Vector2 coords, int[,] map)
+		Console.WriteLine();
+		Console.ResetColor();
+	}
+
+	private static void DrawNumber(int x)
+	{
+		Console.BackgroundColor = ConsoleColor.DarkBlue;
+		Console.ForegroundColor = ConsoleColor.White;
+		// if x > 9, draw 1 whitespace, else draw 2 whitespaces
+		if (x + 1 > 9)
+		{
+			Console.Write(x + 1 + " ");
+		}
+		else
+		{
+			Console.Write(x + 1 + "  ");
+		}
+
+		Console.ResetColor();
+	}
+
+
+	private Configuration.Ships GetShipType(IntegerVector2 coords, int[,] map)
 	{
 		int x = (int)coords.X;
 		int y = (int)coords.Y;
 		
 		int shipType = map[x, y];
-		if (shipType < 1 || shipType > 4)
+		switch (shipType)
 		{
-			return Configuration.Ships.None;
-		}
-		else
-		{
-			return (Configuration.Ships)shipType;
+			case 1:
+				return Configuration.Ships.Small;
+			case 2:
+				return Configuration.Ships.Medium;
+			case 3:
+				return Configuration.Ships.Large;
+			case 4:
+				return Configuration.Ships.Huge;
+			default:
+				return Configuration.Ships.None;
 		}
 	}
 
-	private void HitShip(int x, int y, int[,] defenseMap, int[,] attackMap)
+	private int GetShipSize(IntegerVector2 coords, int[,] map)
 	{
-		// check if we hit a ship, if so, mark it as hit (5), if not, mark it as miss (6)
-		if (GetShipType(new Vector2(x, y), defenseMap) != Configuration.Ships.None)
+		int shipSize = 0;
+		if (map[coords.X, coords.Y] < 1 && map[coords.X, coords.Y] > 5)
 		{
-			defenseMap[x, y] = 5;
-			attackMap[x, y] = 5;
+			return shipSize;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	private void HitShip(IntegerVector2 target, int[,] defenseMap, int[,] attackMap)
+	{
+		int x = target.X;
+		int y = target.Y;
+		
+		// check if we hit a ship, if so, mark it as hit (5), if not, mark it as miss (6)
+		if (GetShipType(target, defenseMap) != Configuration.Ships.None)
+		{
+			defenseMap[x,y] = 5;
+			attackMap[x,y] = 5;
 			// if we destroyed a ship, mark all surrounding tiles as hit (6)
-			if (IsShipDestroyed(new Vector2(x, y), defenseMap))
+			if (IsShipDestroyed(new IntegerVector2(x, y), defenseMap))
 			{
 				// mark all surrounding tiles as hit (6)
 				for (int i = -1; i <= 1; i++)
@@ -328,16 +268,73 @@ public class Game
 			attackMap[x, y] = 6;
 		}
 	}
-	private bool IsShipDestroyed(Vector2 coords, int[,] defenseMap)
+	private bool IsShipDestroyed(IntegerVector2 coords, int[,] defenseMap)
 	{
-		int shipSize = (int)GetShipType(coords, defenseMap);
+		int shipSize = GetShipSize(coords, defenseMap);
 		int x = (int)coords.X;
 		int y = (int)coords.Y;
 
+		IntegerVector2 startShipPosition = new IntegerVector2(x, y);
+		IntegerVector2 direction = new IntegerVector2(0, 0);
 		
-		return false;
+		// get ship start position and direction
+		for (int i = -1; i <= 1; i++)
+		{
+			for (int j = -1; j <= 1; j++)
+			{
+				int xx = x + i;
+				int yy = y + j;
+				if (xx >= 0 && xx < defenseMap.GetLength(0) && yy >= 0 && yy < defenseMap.GetLength(1))
+				{
+					if (defenseMap[xx, yy] == shipSize)
+					{
+						startShipPosition = new IntegerVector2(xx, yy);
+						direction = new IntegerVector2(i, j);
+					}
+				}
+			}
+		}
+
+		bool isDestroyed = false;
+		// check if the ship is destroyed
+		for (int i = 0; i < shipSize; i++)
+		{
+			int xx = startShipPosition.X + i * direction.X;
+			int yy = startShipPosition.Y + i * direction.Y;
+			if (defenseMap[xx, yy] == 5)
+			{
+				isDestroyed = true;
+			}
+			else
+			{
+				isDestroyed = false;
+				break;
+			}
+		}
+		
+		return isDestroyed;
+		
 	}
+}
 
+public struct IntegerVector2
+{
+	public int X;
+	public int Y;
 
-
+	public IntegerVector2(int x, int y)
+	{
+		X = x;
+		Y = y;
+	}
+	
+	public static bool operator ==(IntegerVector2 a, IntegerVector2 b)
+	{
+		return a.X == b.X && a.Y == b.Y;
+	}
+	
+	public static bool operator !=(IntegerVector2 a, IntegerVector2 b)
+	{
+		return !(a == b);
+	}
 }
