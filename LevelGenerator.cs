@@ -2,21 +2,18 @@
 
 public class LevelGenerator {
     
-    private int seed;
     public int[, ] GenerateLevel(int seed) 
     {
-        this.seed = seed;
+        Random random = new Random(seed);
         int[,] level = new int[Configuration.size, Configuration.size];
 
-        PlaceShips(ref level);
+        PlaceShips(ref level, random);
 
         return level;
     }
 
-    public void PlaceShips(ref int[, ] map) 
+    public void PlaceShips(ref int[, ] map, Random random) 
     {
-        Random random = new Random(seed);
-
         foreach(var ship in Configuration.ShipArray) {
             int shipCount = GetShipCount(ship);
             for (int i = 0; i < shipCount; i++) {
