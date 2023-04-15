@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using SeaBattle.Players;
 
@@ -7,12 +7,7 @@ namespace SeaBattle;
 
 public class Game
 {
-	int[,] player1MapDefense;
-	int[,] player1MapAttack;
-	
-	int[,] player2MapDefense;
-	int[,] player2MapAttack;
-	
+
 	bool isPlayer1Turn = true;
 	
 	private IPlayer player1 = new Player();
@@ -21,14 +16,6 @@ public class Game
 
 	public Game()
 	{
-		// Generate the two maps for the players
-		LevelGenerator levelGenerator = new LevelGenerator();
-		player1MapDefense = levelGenerator.GenerateLevel(Configuration.seed);
-		player2MapDefense = levelGenerator.GenerateLevel(Configuration.seed + 1);
-
-		// Initialize the attack maps for both players
-		player1MapAttack = new int[Configuration.size, Configuration.size];
-		player2MapAttack = new int[Configuration.size, Configuration.size];
 	}
 
 	public void Start()
@@ -63,8 +50,14 @@ public class Game
 
 				isPlayer1Turn = true;
 			}
+
+			// Check if all ships are destroyed
+			// ...
+
+			// Display the game board
 			Console.Clear();
 		}
+
 	}
 
 	public void Turn(IPlayer player, int[,] victimMap, int[,] attackerMap)
