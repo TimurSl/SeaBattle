@@ -16,28 +16,7 @@ public class Bot : IPlayer
 			x = random.Next(Configuration.size);
 			y = random.Next(Configuration.size);
 		}
-		
-		if (attackMap[x, y] == 5)
-		{
-			// hit, pick random position around it
-			int direction = random.Next(4);
-			switch (direction)
-			{
-				case 0:
-					x++;
-					break;
-				case 1:
-					x--;
-					break;
-				case 2:
-					y++;
-					break;
-				case 3:
-					y--;
-					break;
-			}
-		}
-		
+
 		return new IntegerVector2(x, y);
 	}
 }

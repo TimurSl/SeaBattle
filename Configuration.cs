@@ -12,26 +12,28 @@ public class Configuration
 	
 	public static readonly Dictionary<int, Pixel> PixelMap = new Dictionary<int, Pixel>()
 	{
-		{ 0, new Pixel() { Color = ConsoleColor.White, Char = ' ' } },
-		{ 1, new Pixel() { Color = ConsoleColor.DarkBlue, Char = 'S' } },
-		{ 2, new Pixel() { Color = ConsoleColor.Blue, Char = 'M' } },
-		{ 3, new Pixel() { Color = ConsoleColor.Cyan, Char = 'L' } },
-		{ 4, new Pixel() { Color = ConsoleColor.DarkCyan, Char = 'H' } },
-		{ 5, new Pixel() { Color = ConsoleColor.Red, Char = 'X' } },
-		{ 6, new Pixel() { Color = ConsoleColor.Yellow, Char = 'x' } },
+		{ (int) Ships.Nothing, new Pixel() { Color = ConsoleColor.White, Char = '_' } },
+		{ (int) Ships.Small, new Pixel() { Color = ConsoleColor.DarkBlue, Char = 'S' } },
+		{ (int) Ships.Medium, new Pixel() { Color = ConsoleColor.Blue, Char = 'M' } },
+		{ (int) Ships.Large, new Pixel() { Color = ConsoleColor.Cyan, Char = 'L' } },
+		{ (int) Ships.Huge, new Pixel() { Color = ConsoleColor.DarkCyan, Char = 'H' } },
+		{ (int) Ships.Hit, new Pixel() { Color = ConsoleColor.Red, Char = 'X' } },
+		{ (int) Ships.Miss, new Pixel() { Color = ConsoleColor.Yellow, Char = 'x' } },
 	};
 
 	public static readonly Ships[] ShipArray = new Ships[4] { Ships.Small, Ships.Medium, Ships.Large, Ships.Huge };
 
 	public enum Ships
 	{
+		Nothing = 0,
+		
 		Small = 1,
 		Medium = 2,
 		Large = 3,
 		Huge = 4,
 		
-		None = 0,
-		Destroyed = 5,
+		Miss = -1,
+		Hit = -2,
 	}
 }
 

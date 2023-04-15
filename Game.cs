@@ -39,6 +39,7 @@ public class Game
 		Console.ReadKey();
 		Console.Clear();
 		
+		
 		// Loop until the game is over
 		while (CanGameRun())
 		{
@@ -46,40 +47,33 @@ public class Game
 			DrawMap(player1MapDefense);
 			Console.WriteLine();
 			DrawMap(player1MapAttack);
-			Console.WriteLine();
-			DrawMap(player2MapDefense);
+			
 			
 			// If it is the player's turn, then the player takes their turn
 			if (isPlayer1Turn)
 			{
-				IntegerVector2 target = player1.GetTarget(player2MapDefense);
-				
-				if (target != new IntegerVector2(-1, -1))
-				{
-					int x = (int) target.X;
-					int y = (int) target.Y;
-
-					HitShip(target, player2MapDefense, player1MapAttack);
-				}
+				Turn(player1, player2MapDefense, player1MapAttack);
 				
 				isPlayer1Turn = false;
 			}
 			// Otherwise, the enemy takes their turn
 			else
 			{
-				IntegerVector2 target = player2.GetTarget(player1MapDefense);
-				
-				if (target != new IntegerVector2(-1, -1))
-				{
-					int x = (int) target.X;
-					int y = (int) target.Y;
-
-					HitShip(target, player1MapDefense, player2MapAttack);
-				}
+				Turn(player2, player1MapDefense, player2MapAttack);
 
 				isPlayer1Turn = true;
 			}
 			Console.Clear();
+		}
+	}
+
+	public void Turn(IPlayer player, int[,] victimMap, int[,] attackerMap)
+	{
+		IntegerVector2 target = player.GetTarget(victimMap);
+
+		if (target != new IntegerVector2(-1, -1))
+		{
+			HitShip(target, victimMap, attackerMap);
 		}
 	}
 
@@ -95,6 +89,8 @@ public class Game
 		Console.WriteLine("S - small ship");
 		Console.WriteLine("M - medium ship");
 		Console.WriteLine("L - large ship");
+		Console.WriteLine("H - huge ship");
+		Console.WriteLine();
 		Console.WriteLine("X - hit");
 		Console.WriteLine("x - miss");
 		Console.WriteLine();
@@ -106,25 +102,25 @@ public class Game
 
 	bool CanGameRun()
 	{
-		for (int p = 1; p <= 2; p++)
-		{
-			int[,] playerMap = (p == 1) ? player1MapDefense : player2MapDefense;
-
-			for (int x = 0; x < playerMap.GetLength(0); x++)
-			{
-				for (int y = 0; y < playerMap.GetLength(1); y++)
-				{
-					if (playerMap[x, y] > 1)
-					{
-						return true;
-					}
-				}
-			}
-		}
+		bool player1HasShips = player1MapDefense.Cast<int>().Any(x => x == 1 || x == 2 || x == 3 || x == 4);
+		bool player2HasShips = player2MapDefense.Cast<int>().Any(x => x == 1 || x == 2 || x == 3 || x == 4);
 		
+		if (player1HasShips && player2HasShips)
+		{
+			return true;
+		}
+
+		if (player1HasShips)
+		{
+			Console.WriteLine("Player 1 wins!");
+		}
+		else
+		{
+			Console.WriteLine("Player 2 wins!");
+		}
 		return false;
 	}
-	
+
 	private void DrawMap(int[,] map)
 	{
 		// draw coordinates (A-(level size in letters)) and numbers (1-(level size in numbers)), if levelsize > 26, use 2 letters for coordinates
@@ -189,31 +185,11 @@ public class Game
 		Console.ResetColor();
 	}
 
-
-	private Configuration.Ships GetShipType(IntegerVector2 coords, int[,] map)
-	{
-		int x = (int)coords.X;
-		int y = (int)coords.Y;
-		
-		int shipType = map[x, y];
-		switch (shipType)
-		{
-			case 1:
-				return Configuration.Ships.Small;
-			case 2:
-				return Configuration.Ships.Medium;
-			case 3:
-				return Configuration.Ships.Large;
-			case 4:
-				return Configuration.Ships.Huge;
-			default:
-				return Configuration.Ships.None;
-		}
-	}
+	
 
 	private int GetShipSize(IntegerVector2 coords, int[,] map)
 	{
-		if (map[coords.X, coords.Y] > 0 && map[coords.X, coords.Y] < 5)
+		if (map[coords.X, coords.Y] > 0)
 		{
 			return map[coords.X, coords.Y];
 		}
@@ -225,129 +201,96 @@ public class Game
 	{
 		int x = target.X;
 		int y = target.Y;
-		
-		// check if we hit a ship, if so, mark it as hit (5), if not, mark it as miss (6)
-		if (defenseMap[x, y] > 0 && defenseMap[x, y] < 5)
+
+		if (IsHit(target, defenseMap))
 		{
-			// if we destroyed a ship, mark all surrounding tiles as hit (6)
-			IntegerVector2[] fullShip = GetAllShipFromCoords(target, defenseMap);
+			bool isShipDestroyed = IsShipDestroyed(target, defenseMap, out var shipCells);
+			if (isShipDestroyed)
+			{
+				OutlineShip(shipCells, ref attackMap, ref defenseMap);
+			}
 			
-			if (IsShipDestroyed(fullShip, defenseMap))
-			{
-				// mark all surrounding tiles as hit (6)
-				MarkShipAsDestroyed(attackMap, fullShip);
-			}
-			else
-			{
-				// if the ship is not destroyed, mark only the hit cell as hit (5)
-				attackMap[x, y] = 5;
-			}
-			defenseMap[x,y] = 5;
-			attackMap[x,y] = 5;
+			attackMap[x, y] = (int) Configuration.Ships.Hit;
+			defenseMap[x, y] = (int) Configuration.Ships.Hit;
 		}
 		else
 		{
-			// mark the cell as miss (6)
-			attackMap[x, y] = 6;
+			// mark cell as miss
+			attackMap[x, y] = (int) Configuration.Ships.Miss;
+		}
+		
+	}
+
+	private void OutlineShip(IntegerVector2[] shipCells, ref int[,] attackerMap, ref int[,] victimMap)
+	{
+		foreach (var cell in shipCells)
+		{
+			OutlineCell(cell, ref attackerMap);
+		}
+		
+		foreach (var cell in shipCells)
+		{
+			attackerMap[cell.X, cell.Y] = (int) Configuration.Ships.Hit;
+			victimMap[cell.X, cell.Y] = (int) Configuration.Ships.Hit;
 		}
 	}
 
-	private void MarkShipAsDestroyed(int[,] attackMap, IntegerVector2[] ship)
+	private void OutlineCell(IntegerVector2 cell, ref int[,] map)
 	{
-		// mark all surrounding tiles as hit (6)
-		foreach (IntegerVector2 coords in ship)
+		int x = cell.X;
+		int y = cell.Y;
+		
+		// mark cell as hit
+		
+		// mark all cells around as hit and also check if our coords are out of bounds (if they are, skip them)
+		for (int i = -1; i < 2; i++)
 		{
-			int x = coords.X;
-			int y = coords.Y;
-			
-			// mark all surrounding tiles as hit (6)
-			for (int i = -1; i <= 1; i++)
+			for (int j = -1; j < 2; j++)
 			{
-				for (int j = -1; j <= 1; j++)
+				if (x + i >= 0 && x + i < map.GetLength(0) && y + j >= 0 && y + j < map.GetLength(1))
 				{
-					if (x + i >= 0 && x + i < attackMap.GetLength(0) && y + j >= 0 && y + j < attackMap.GetLength(1))
-					{
-						attackMap[x + i, y + j] = 6;
-					}
+					map[x + i, y + j] = (int) Configuration.Ships.Miss;
 				}
 			}
 		}
 
+		map[x, y] = (int) Configuration.Ships.Hit;
+
 	}
 
-	private IntegerVector2[] GetAllShipFromCoords(IntegerVector2 coords, int[,] map)
+	private bool IsHit(IntegerVector2 point, int[,] map)
 	{
-		IntegerVector2[] shipCoords = new IntegerVector2[GetShipSize(coords, map)];
-		// get ship size
-		int shipSize = GetShipSize(coords, map);
-		int x = (int)coords.X;
-		int y = (int)coords.Y;
-		
-		// get ship start and end coordinates
-		IntegerVector2 start = new(x, y);
-		IntegerVector2 dir = new(0, 0);
-		
-		IntegerVector2[] directions = new IntegerVector2[]
-		{
-			new IntegerVector2(1, 0),
-			new IntegerVector2(0, 1),
-			new IntegerVector2(-1, 0),
-			new IntegerVector2(0, -1)
-		};
-		
-		// check all directions, until we get to not ship tile,
-		// then we know the start of the ship
-		foreach (IntegerVector2 direction in directions)
-		{
-			IntegerVector2 current = coords;
-			while (GetShipType(current, map) == GetShipType(coords, map))
-			{
-				start = current;
-				current += direction;
-			}
-		}
-		
-		// check all directions, until we get to not ship tile,
-		// then we know the end of the ship
-		foreach (IntegerVector2 direction in directions)
-		{
-			IntegerVector2 current = coords;
-			while (GetShipType(current, map) == GetShipType(coords, map))
-			{
-				dir = current;
-				current += direction;
-			}
-		}
-		
-		// get all cells between start and end (end will be the last cell before we get to not ship tile)
-		IntegerVector2[] shipCells = new IntegerVector2[shipSize];
-		int i = 0;
-		while (start != dir)
-		{
-			shipCells[i] = start;
-			start += new IntegerVector2(1, 0);
-			i++;
-		}
-		
-		return shipCells;
+		return map[point.X, point.Y] > 0;
 	}
 	
-	private bool IsShipDestroyed(IntegerVector2[] coords, int[,] defenseMap)
+	
+	private bool IsShipDestroyed(IntegerVector2 coords, int[,] defenseMap, out IntegerVector2[] shipCells)
 	{
-		bool isDestroyed = false;
-		foreach (IntegerVector2 cell in coords)
+		int x = (int)coords.X;
+		int y = (int)coords.Y;
+
+		// Check if the hit coordinate contains a ship.
+		if (defenseMap[x, y] == 0)
 		{
-			isDestroyed = defenseMap[cell.X, cell.Y] == 5;
+			shipCells = new IntegerVector2[0];
+			return false;
 		}
 
-		if (coords.Length == 1)
+		int shipSize = GetShipSize(coords, defenseMap);
+		Console.WriteLine("Ship size: " + shipSize);
+		
+		if (shipSize == 0)
 		{
-			return true;
+			shipCells = new IntegerVector2[0];
+			return false;
 		}
 
-		// if we got here, the ship is destroyed
-		return isDestroyed;
+		//TODO: make check if ship is destroyed
+		
+		shipCells = new IntegerVector2[0];
+		return false;
 	}
+	
 }
 
 public struct IntegerVector2
@@ -374,5 +317,15 @@ public struct IntegerVector2
 	public static IntegerVector2 operator +(IntegerVector2 a, IntegerVector2 b)
 	{
 		return new IntegerVector2(a.X + b.X, a.Y + b.Y);
+	}
+	
+	public static IntegerVector2 operator +(IntegerVector2 a, int b)
+	{
+		return new IntegerVector2(a.X + b, a.Y + b);
+	}
+	
+	public static IntegerVector2 operator *(IntegerVector2 a, int b)
+	{
+		return new IntegerVector2(a.X * b, a.Y * b);
 	}
 }
