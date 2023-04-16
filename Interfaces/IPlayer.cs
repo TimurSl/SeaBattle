@@ -31,6 +31,8 @@ public interface IPlayer
 				GetAttackMap ().OutlineShip(ship);
 			}
 		}
+		
+		target.GetDefenseMap ().lastHit = coordinates;
 	}
 	public string GetName();
 

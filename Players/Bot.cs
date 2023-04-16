@@ -15,7 +15,7 @@ public class Bot : SeaBattle.IPlayer
 	{
 		this.name = name;
 		MapSeed = mapSeed;
-		DefenseMap = new Map ();
+		DefenseMap = new Map (useLastHit:true);
 		AttackMap = new Map(false, true);
 	}
 

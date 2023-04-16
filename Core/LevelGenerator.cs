@@ -1,4 +1,5 @@
-﻿using static SeaBattle.Configuration;
+﻿using System.Diagnostics;
+using static SeaBattle.Configuration;
 
 namespace SeaBattle;
 
@@ -6,7 +7,7 @@ public class LevelGenerator
 {
 	public static Cell[,] GenerateLevel()
 	{
-		Random random = new Random(12);
+		Random random = new Random(1);
 		Cell[,] level = MakeEmptyMap();
 
 		PlaceShips(ref level, random);

@@ -15,7 +15,7 @@ public class HumanPlayer : SeaBattle.IPlayer
 	{
 		Name = name;
 		MapSeed = mapSeed;
-		DefenseMap = new Map(true);
+		DefenseMap = new Map(true, useLastHit:true);
 		AttackMap = new Map(false, true);
 	}
 

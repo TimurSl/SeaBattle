@@ -5,11 +5,14 @@ public class Map
 	public Cell[,] Grid;
 	public IntegerVector2 cursorPosition;
 	bool showCursor;
-	
-	public Map(bool generate = true, bool showCursor = false)
+	public IntegerVector2 lastHit = new IntegerVector2(-1, -1);
+	bool useLastHit = false;
+
+	public Map(bool generate = true, bool showCursor = false, bool useLastHit = false)
 	{
 		Grid = generate ? LevelGenerator.GenerateLevel() : LevelGenerator.MakeEmptyMap ();
 		this.showCursor = showCursor;
+		this.useLastHit = useLastHit;
 	}
 	
 	private static void DrawLetters(Cell[,] map)
@@ -69,6 +72,11 @@ public class Map
 						OutlineShip(ship);
 					}
 				}
+				if (useLastHit && new IntegerVector2(x, y) == lastHit)
+				{
+					Console.BackgroundColor = ConsoleColor.DarkRed;
+				}
+				
 				ConsoleColor color = Grid[x, y].GetCellColor ();
 				int cellType = (int) Grid[x, y].CellType;
 				
