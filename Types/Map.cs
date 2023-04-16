@@ -86,6 +86,8 @@ public class Map
 
 			Console.WriteLine();
 		}
+
+		Console.WriteLine();
 	}
 
 	public void OutlineShip(Ship ship)
