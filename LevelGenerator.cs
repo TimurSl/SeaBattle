@@ -1,107 +1,141 @@
-﻿namespace SeaBattle;
+﻿using static SeaBattle.Configuration;
 
-public class LevelGenerator {
-    
-    public int[, ] GenerateLevel(int seed) 
-    {
-        Random random = new Random(seed);
-        int[,] level = new int[Configuration.size, Configuration.size];
+namespace SeaBattle;
 
-        PlaceShips(ref level, random);
+public class LevelGenerator
+{
+	public static Cell[,] GenerateLevel(int seed)
+	{
+		Random random = new Random(seed);
+		Cell[,] level = MakeEmptyMap();
 
-        return level;
-    }
+		PlaceShips(ref level, random);
 
-    public void PlaceShips(ref int[, ] map, Random random) 
-    {
-        foreach(var ship in Configuration.ShipArray) {
-            int shipCount = GetShipCount(ship);
-            for (int i = 0; i < shipCount; i++) {
-                PlaceShip(ref map, ship, random);
-            }
-        }
-    }
+		return level;
+	}
 
-    private int GetShipCount(Configuration.Ships ship) {
-        switch (ship) {
-        case Configuration.Ships.Small:
-            return Configuration.maxSmallShips;
-        case Configuration.Ships.Medium:
-            return Configuration.maxMediumShips;
-        case Configuration.Ships.Large:
-            return Configuration.maxLargeShips;
-        case Configuration.Ships.Huge:
-            return Configuration.maxHugeShips;
-        }
-        return 0;
-    }
+	public static Cell[,] MakeEmptyMap()
+	{
+		Cell[,] level = new Cell[size, size];
+		// Initialize the level with empty cells
+		for (int x = 0; x < size; x++)
+		{
+			for (int y = 0; y < size; y++)
+			{
+				level[x, y] = new Cell(new IntegerVector2(x, y), CellType.Nothing);
+			}
+		}
 
-    private void PlaceShip(ref int[,] map, Configuration.Ships ship, Random random)
-    {
-        int x, y;
-        bool isPlaced = false;
-        int length = (int)ship;
+		return level;
+	}
 
-        while (!isPlaced)
-        {
-            // Generate a random starting position for the ship
-            x = random.Next(map.GetLength(0));
-            y = random.Next(map.GetLength(1));
+	public static void PlaceShips(ref Cell[,] map, Random random)
+	{
+		var ships = Enum.GetValues(typeof(ShipType)).Cast<ShipType> ();
+		foreach (var ship in ships)
+		{
+			int shipCount = GetShipCount(ship);
+			for (int i = 0; i < shipCount; i++)
+			{
+				PlaceShip(ref map, ship, random);
+			}
+		}
+	}
 
-            // Generate a random orientation for the ship (0 = horizontal, 1 = vertical)
-            int orientation = random.Next(2);
+	private static int GetShipCount(ShipType cellType)
+	{
+		switch (cellType)
+		{
+			case ShipType.Small:
+				return maxSmallShips;
+			case ShipType.Medium:
+				return maxMediumShips;
+			case ShipType.Large:
+				return maxLargeShips;
+			case ShipType.Huge:
+				return maxHugeShips;
+		}
 
-            // Check if the ship can be placed in the selected orientation without going out of bounds
-            if ((orientation == 0 && x + length <= map.GetLength(0)) ||
-                (orientation == 1 && y + length <= map.GetLength(1)))
-            {
-                // Check if the ship is too close to any existing ships
-                bool overlaps = false;
+		return 0;
+	}
 
-                for (int i = -1; i <= length; i++)
-                {
-                    for (int j = -1; j <= 1; j++)
-                    {
-                        int cx = x + (orientation == 0 ? i : 0);
-                        int cy = y + (orientation == 1 ? i : 0);
+	private static void PlaceShip(ref Cell[,] map, ShipType ship, Random random)
+	{
+		int x, y;
+		bool isPlaced = false;
+		int length = (int) ship;
 
-                        // Check if the current cell is already occupied by another ship, or is adjacent to another ship
-                        for (int ii = -1; ii <= 1; ii++)
-                        {
-                            for (int jj = -1; jj <= 1; jj++)
-                            {
-                                int tx = cx + ii;
-                                int ty = cy + jj;
+		while (!isPlaced)
+		{
+			// Generate a random starting position for the ship
+			x = random.Next(map.GetLength(0));
+			y = random.Next(map.GetLength(1));
 
-                                if (tx >= 0 && tx < map.GetLength(0) && ty >= 0 && ty < map.GetLength(1) && map[tx, ty] != 0)
-                                {
-                                    overlaps = true;
-                                    break;
-                                }
-                            }
+			// Generate a random orientation for the ship (0 = horizontal, 1 = vertical)
+			int orientation = random.Next(2);
 
-                            if (overlaps) break;
-                        }
+			// Check if the ship can be placed in the selected orientation without going out of bounds
+			if ((orientation == 0 && x + length <= map.GetLength(0)) ||
+			    (orientation == 1 && y + length <= map.GetLength(1)))
+			{
+				// Check if the ship is too close to any existing ships
+				bool overlaps = false;
 
-                        if (overlaps) break;
-                    }
+				for (int i = -1; i <= length; i++)
+				{
+					for (int j = -1; j <= 1; j++)
+					{
+						int cx = x + (orientation == 0 ? i : 0);
+						int cy = y + (orientation == 1 ? i : 0);
 
-                    if (overlaps) break;
-                }
+						// Check if the current cell is already occupied by another ship, or is adjacent to another ship
+						for (int ii = -1; ii <= 1; ii++)
+						{
+							for (int jj = -1; jj <= 1; jj++)
+							{
+								int tx = cx + ii;
+								int ty = cy + jj;
 
-                // If the ship doesn't overlap with any existing ships, place it on the map
-                if (!overlaps)
-                {
-                    for (int i = 0; i < length; i++)
-                    {
-                        int cx = x + (orientation == 0 ? i : 0);
-                        int cy = y + (orientation == 1 ? i : 0);
-                        map[cx, cy] = ship.GetHashCode();
-                    }
+								if (tx >= 0 && tx < map.GetLength(0) && // check if X is in bounds
+								    ty >= 0 && ty < map.GetLength(1) && // check if Y is in bounds
+								    map[tx, ty].CellType != CellType.Nothing) // check if the cell is occupied
+								{
+									overlaps = true;
+									break;
+								}
+							}
 
-                    isPlaced = true;
-                }
-            }
-        }
-    }
+							if (overlaps) break;
+						}
+
+						if (overlaps) break;
+					}
+
+					if (overlaps) break;
+				}
+
+				// If the ship doesn't overlap with any existing ships, place it on the map
+				if (!overlaps)
+				{
+					Cell[] shipCells = new Cell[length];
+					for (int i = 0; i < length; i++)
+					{
+						int cx = x + (orientation == 0 ? i : 0);
+						int cy = y + (orientation == 1 ? i : 0);
+						Ship shipObj = new Ship(new IntegerVector2(cx, cy), ship);
+						shipCells[i] = shipObj;
+						map[cx, cy] = shipObj;
+					}
+					// add all cells to all cells
+					foreach (var cell1 in shipCells)
+					{
+						var cell = (Ship) cell1;
+						cell.ShipCells = shipCells;
+					}
+
+					isPlaced = true;
+				}
+			}
+		}
+	}
 }
