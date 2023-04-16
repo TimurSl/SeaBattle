@@ -6,9 +6,9 @@ public class Map
 	public IntegerVector2 cursorPosition;
 	bool showCursor;
 	
-	public Map(bool generate = true, int seed = 1, bool showCursor = false)
+	public Map(bool generate = true, bool showCursor = false)
 	{
-		Grid = generate ? LevelGenerator.GenerateLevel(seed) : LevelGenerator.MakeEmptyMap ();
+		Grid = generate ? LevelGenerator.GenerateLevel() : LevelGenerator.MakeEmptyMap ();
 		this.showCursor = showCursor;
 	}
 	

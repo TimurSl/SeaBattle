@@ -11,7 +11,7 @@ public class Game
 	static List<IPlayer> players = new List<IPlayer> ()
 	{
 		new HumanPlayer("Zenisoft"),
-		new Bot(),
+		new Bot("John (bot)"),
 	};
 	private Queue<IPlayer> playersQueue = new Queue<IPlayer>(players);
 	
@@ -20,7 +20,7 @@ public class Game
 	{
 		foreach (IPlayer player in players)
 		{
-			player.GetDefenseMap ().Grid = LevelGenerator.GenerateLevel (player.GetHashCode ());
+			player.GetDefenseMap ().Grid = LevelGenerator.GenerateLevel ();
 			player.GetAttackMap ().Grid = LevelGenerator.MakeEmptyMap ();
 		}
 		WelcomeMessage();

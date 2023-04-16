@@ -4,14 +4,19 @@ namespace SeaBattle.Players;
 
 public class Bot : SeaBattle.IPlayer
 {
-	public Map DefenseMap = new Map(true, 1);
-	public Map AttackMap = new Map(false, 1, true);
+	public Map DefenseMap;
+	public Map AttackMap;
 	
 	private string name = "Bot";
+	public int MapSeed { get; set; }
+
 	
-	public Bot(string name = "Bot")
+	public Bot(string name = "Bot", int mapSeed = 0)
 	{
 		this.name = name;
+		MapSeed = mapSeed;
+		DefenseMap = new Map ();
+		AttackMap = new Map(false, true);
 	}
 
 	public Map GetDefenseMap()
@@ -44,6 +49,7 @@ public class Bot : SeaBattle.IPlayer
 		return "Bot";
 	}
 	
+
 
 	public string GetName()
 	{

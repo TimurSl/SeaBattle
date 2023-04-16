@@ -3,7 +3,6 @@ namespace SeaBattle;
 public class Configuration
 {
 	public const int size = 10;
-	public static int seed = 0;
 
 	public const int maxSmallShips = 4;
 	public const int maxMediumShips = 3;

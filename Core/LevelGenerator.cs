@@ -4,9 +4,9 @@ namespace SeaBattle;
 
 public class LevelGenerator
 {
-	public static Cell[,] GenerateLevel(int seed)
+	public static Cell[,] GenerateLevel()
 	{
-		Random random = new Random(seed);
+		Random random = new Random(12);
 		Cell[,] level = MakeEmptyMap();
 
 		PlaceShips(ref level, random);

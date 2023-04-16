@@ -6,13 +6,17 @@ namespace SeaBattle.Players;
 public class HumanPlayer : SeaBattle.IPlayer
 {
 	public string Name { get; set; }
-	public Map DefenseMap = new Map(true, 2);
-	public Map AttackMap = new Map(false, 2, true);
+	public Map DefenseMap;
+	public Map AttackMap;
 	private IntegerVector2 cursorPosition = new IntegerVector2(0, 0);
-	
-	public HumanPlayer(string name = "Player")
+	public int MapSeed { get; set; }
+
+	public HumanPlayer(string name = "Player", int mapSeed = 0)
 	{
 		Name = name;
+		MapSeed = mapSeed;
+		DefenseMap = new Map(true);
+		AttackMap = new Map(false, true);
 	}
 
 	private IntegerVector2 ReadInput()
@@ -65,6 +69,8 @@ public class HumanPlayer : SeaBattle.IPlayer
 					MoveCursorTo(new IntegerVector2(0, 1));
 					break;
 				case ConsoleKey.Enter:
+					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyDestroyed ())
+						break;
 					return cursorPosition;
 			}
 		}
@@ -99,6 +105,7 @@ public class HumanPlayer : SeaBattle.IPlayer
 	{
 		return "Human";
 	}
+
 
 	public string GetName()
 	{

@@ -29,6 +29,11 @@ public class Cell
 		return CellType == CellType.Ship;
 	}
 	
+	public bool IsAlreadyDestroyed()
+	{
+		return CellType == CellType.Hit || CellType == CellType.Miss;
+	}
+	
 	public virtual char GetCellChar()
 	{
 		return PixelMap[(int) CellType].Char;
