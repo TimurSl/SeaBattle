@@ -14,16 +14,15 @@ public class Game
 		new Bot(),
 	};
 	private Queue<IPlayer> playersQueue = new Queue<IPlayer>(players);
-
-
-	public Game()
-	{
-		
-	}
+	
 
 	public void Start()
 	{
-		Console.WriteLine(Figgle.FiggleFonts.Doom.Render("Sea Battle"));
+		foreach (IPlayer player in players)
+		{
+			player.GetDefenseMap ().Grid = LevelGenerator.GenerateLevel (player.GetHashCode ());
+			player.GetAttackMap ().Grid = LevelGenerator.MakeEmptyMap ();
+		}
 		WelcomeMessage();
 
 		Console.ReadKey();
@@ -49,10 +48,6 @@ public class Game
 			
 			Console.Clear();
 		}
-		
-		
-		Console.ReadKey();
-
 	}
 
 	public void Turn(IPlayer attacker, IPlayer defender)
@@ -63,6 +58,8 @@ public class Game
 
 	private static void WelcomeMessage()
 	{
+		Console.WriteLine(Figgle.FiggleFonts.Doom.Render("Sea Battle"));
+
 		Console.WriteLine("Welcome to Sea Battle!");
 		Console.WriteLine("You can skip your turn by pressing enter.");
 		Console.WriteLine();
@@ -84,25 +81,25 @@ public class Game
 
 	bool CanGameRun()
 	{
+		List<IPlayer> hasShips = new List<IPlayer>();
+		hasShips.Clear();
 		// check all players
 		foreach (IPlayer player in players)
 		{
 			// find the player who has at least one ship left
 			if (player.GetDefenseMap().HasShips ())
 			{
-				return true;
+				hasShips.Add(player);
 			}
 		}
 		
-		// find player who has ships left
-		IPlayer playerWithShips = players.Find(player => player.GetDefenseMap().HasShips());
-		if (playerWithShips != null)
+		// if there is only one player with ships left, he has won the game
+		if (hasShips.Count == 1)
 		{
-			Console.WriteLine("Player " + playerWithShips.GetName () + " has won the game!");
-			Console.ReadKey ();
+			Console.WriteLine("Player " + hasShips[0].GetName () + " has won the game!");
 			return false;
 		}
-		
-		return false;
+
+		return true;
 	}
 }

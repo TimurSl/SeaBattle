@@ -124,7 +124,7 @@ public class Map
 		{
 			for (int y = 0; y < Grid.GetLength(1); y++)
 			{
-				if (Grid[x, y].IsShip())
+				if (Grid[x, y].CellType == Configuration.CellType.Ship)
 				{
 					return true;
 				}
