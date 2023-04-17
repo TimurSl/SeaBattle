@@ -1,4 +1,6 @@
-﻿namespace SeaBattle;
+﻿using SeaBattle.Types;
+
+namespace SeaBattle;
 
 public class Map
 {
@@ -8,9 +10,21 @@ public class Map
 	public IntegerVector2 lastHit = new IntegerVector2(-1, -1);
 	bool useLastHit = false;
 
-	public Map(bool generate = true, bool showCursor = false, bool useLastHit = false)
+	public Map(LevelCreationType levelType = LevelCreationType.Random, bool showCursor = false, bool useLastHit = false)
 	{
-		Grid = generate ? LevelGenerator.GenerateLevel() : LevelGenerator.MakeEmptyMap ();
+		switch (levelType)
+		{
+			case LevelCreationType.Empty:
+				Grid = LevelGenerator.MakeEmptyMap ();
+				break;
+			case LevelCreationType.Random:
+				Grid = LevelGenerator.GenerateLevel ();
+				break;
+			case LevelCreationType.Manual:
+				Grid = ManualMapCreator.GetLevel ();
+				// TODO: manual level creation
+				break;
+		}
 		this.showCursor = showCursor;
 		this.useLastHit = useLastHit;
 	}
@@ -142,8 +156,10 @@ public class Map
 		return false;
 	}
 }
-public enum MapType
+
+public enum LevelCreationType
 {
-	Defense,
-	Attack,
+	Empty,
+	Random,
+	Manual,
 }

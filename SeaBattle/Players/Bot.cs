@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using SeaBattle.Types;
 
 namespace SeaBattle.Players;
 
@@ -6,9 +7,11 @@ public class Bot : SeaBattle.IPlayer
 {
 	public Map DefenseMap;
 	public Map AttackMap;
-	
+
 	private string name = "Bot";
 	public int MapSeed { get; set; }
+	
+	private Random random = new Random();
 
 	
 	public Bot(string name = "Bot", int mapSeed = 0)
@@ -16,7 +19,7 @@ public class Bot : SeaBattle.IPlayer
 		this.name = name;
 		MapSeed = mapSeed;
 		DefenseMap = new Map (useLastHit:true);
-		AttackMap = new Map(false, true);
+		AttackMap = new Map(LevelCreationType.Empty, true);
 	}
 
 	public Map GetDefenseMap()
@@ -31,14 +34,12 @@ public class Bot : SeaBattle.IPlayer
 
 	public IntegerVector2 GetTarget(Cell[,] attackMap)
 	{
-		// pick random position what is not miss, if hit, pick random position around it
-		SafeRandom safeRandom = new SafeRandom();
-		int x = safeRandom.Next(Configuration.size);
-		int y = safeRandom.Next(Configuration.size);
+		int x = random.Next(Configuration.size);
+		int y = random.Next(Configuration.size);
 		while (attackMap[x,y].IsHitOrMiss ())
 		{
-			x = safeRandom.Next(Configuration.size);
-			y = safeRandom.Next(Configuration.size);
+			x = random.Next(Configuration.size);
+			y = random.Next(Configuration.size);
 		}
 
 		return new IntegerVector2(x, y);
@@ -49,8 +50,6 @@ public class Bot : SeaBattle.IPlayer
 		return "Bot";
 	}
 	
-
-
 	public string GetName()
 	{
 		return name;

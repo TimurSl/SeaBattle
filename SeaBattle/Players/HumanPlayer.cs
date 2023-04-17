@@ -15,8 +15,8 @@ public class HumanPlayer : SeaBattle.IPlayer
 	{
 		Name = name;
 		MapSeed = mapSeed;
-		DefenseMap = new Map(true, useLastHit:true);
-		AttackMap = new Map(false, true);
+		DefenseMap = new Map(LevelCreationType.Random, useLastHit:true);
+		AttackMap = new Map(LevelCreationType.Empty, true);
 	}
 
 	private IntegerVector2 ReadInput()
@@ -69,6 +69,10 @@ public class HumanPlayer : SeaBattle.IPlayer
 					MoveCursorTo(new IntegerVector2(0, 1));
 					break;
 				case ConsoleKey.Enter:
+					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyDestroyed ())
+						break;
+					return cursorPosition;
+				case ConsoleKey.Spacebar:
 					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyDestroyed ())
 						break;
 					return cursorPosition;

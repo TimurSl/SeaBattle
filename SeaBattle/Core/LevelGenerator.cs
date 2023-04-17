@@ -1,19 +1,18 @@
 ﻿using System.Diagnostics;
+using SeaBattle.Types;
 using static SeaBattle.Configuration;
 
 namespace SeaBattle;
 
 public class LevelGenerator
 {
-
-
+	private static Random random;
 	public static Cell[,] GenerateLevel()
 	{
-		SafeRandom safeRandom = new SafeRandom();
-
+		random = new Random();
 		Cell[,] level = MakeEmptyMap();
 
-		PlaceShips(ref level, safeRandom);
+		PlaceShips(ref level);
 
 		return level;
 	}
@@ -33,7 +32,7 @@ public class LevelGenerator
 		return level;
 	}
 
-	public static void PlaceShips(ref Cell[,] map, SafeRandom safeRandom)
+	public static void PlaceShips(ref Cell[,] map)
 	{
 		var ships = Enum.GetValues(typeof(ShipType)).Cast<ShipType> ();
 		foreach (var ship in ships)
@@ -41,7 +40,7 @@ public class LevelGenerator
 			ShipConfiguration shipConfiguration = GetShipConfiguration(ship);
 			for (int i = 0; i < shipConfiguration.count; i++)
 			{
-				PlaceShip(ref map, ship, safeRandom, shipConfiguration.length);
+				PlaceShip(ref map, ship, shipConfiguration.length);
 			}
 		}
 	}
@@ -51,23 +50,26 @@ public class LevelGenerator
 		return ShipConfigurations[cellType];
 	}
 
-	private static void PlaceShip(ref Cell[,] map, ShipType ship, SafeRandom safeRandom, int length = 1)
+	private static void PlaceShip(ref Cell[,] map, ShipType ship, int length = 1)
 	{
 		int x, y;
 		bool isPlaced = false;
-
+		int xLength = map.GetLength(0);
+		int yLength = map.GetLength(1);
+		Console.WriteLine($"X: {xLength}, Y: {yLength}");
+				
 		while (!isPlaced)
 		{
 			// Generate a random starting position for the ship
-			x = safeRandom.Next(map.GetLength(0));
-			y = safeRandom.Next(map.GetLength(1));
+			x = random.Next(xLength);
+			y = random.Next(yLength);
 
 			// Generate a random orientation for the ship (0 = horizontal, 1 = vertical)
-			int orientation = safeRandom.Next(1);
+			int orientation = random.Next(2);
 
 			// Check if the ship can be placed in the selected orientation without going out of bounds
-			if ((orientation == 0 && x + length <= map.GetLength(0)) ||
-			    (orientation == 1 && y + length <= map.GetLength(1)))
+			if ((orientation == 0 && x + length <= xLength) ||
+			    (orientation == 1 && y + length <= yLength))
 			{
 				// Check if the ship is too close to any existing ships
 				bool overlaps = false;
@@ -87,8 +89,8 @@ public class LevelGenerator
 								int tx = cx + ii;
 								int ty = cy + jj;
 
-								if (tx >= 0 && tx < map.GetLength(0) && // check if X is in bounds
-								    ty >= 0 && ty < map.GetLength(1) && // check if Y is in bounds
+								if (tx >= 0 && tx < xLength && // check if X is in bounds
+								    ty >= 0 && ty < yLength && // check if Y is in bounds
 								    map[tx, ty].CellType != CellType.Nothing) // check if the cell is occupied
 								{
 									overlaps = true;
@@ -125,6 +127,10 @@ public class LevelGenerator
 					}
 
 					isPlaced = true;
+				}
+				else
+				{
+					Console.WriteLine($"Ship overlaps with another ship! Ship: {ship}, Length: {length}");
 				}
 			}
 		}
