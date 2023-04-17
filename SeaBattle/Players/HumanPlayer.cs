@@ -11,9 +11,18 @@ public class HumanPlayer : SeaBattle.IPlayer
 	private IntegerVector2 cursorPosition = new IntegerVector2(0, 0);
 	public int MapSeed { get; set; }
 
-	public HumanPlayer(string name = "Player", int mapSeed = 0)
+	public HumanPlayer(string name = "", int mapSeed = 0)
 	{
-		Name = name;
+		if (name.Length == 0)
+		{
+			Console.WriteLine("Enter name for player: ");
+			Name = Console.ReadLine () ?? "Player";
+			Console.Clear ();
+		}
+		else
+		{
+			Name = name;
+		}
 		MapSeed = mapSeed;
 		DefenseMap = new Map(LevelCreationType.Random, useLastHit:true);
 		AttackMap = new Map(LevelCreationType.Empty, true);

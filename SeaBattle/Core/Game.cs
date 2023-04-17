@@ -10,7 +10,7 @@ public class Game
 {
 	static List<IPlayer> players = new List<IPlayer> ()
 	{
-		new HumanPlayer("Zenisoft"),
+		new HumanPlayer(),
 		new Bot("John (bot)"),
 	};
 	private Queue<IPlayer> playersQueue = new Queue<IPlayer>(players);
