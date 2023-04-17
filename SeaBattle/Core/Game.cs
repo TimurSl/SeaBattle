@@ -18,11 +18,6 @@ public class Game
 
 	public void Start()
 	{
-		foreach (IPlayer player in players)
-		{
-			player.GetDefenseMap ().Grid = LevelGenerator.GenerateLevel ();
-			player.GetAttackMap ().Grid = LevelGenerator.MakeEmptyMap ();
-		}
 		WelcomeMessage();
 
 		Console.ReadKey();

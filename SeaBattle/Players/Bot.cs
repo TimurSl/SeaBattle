@@ -32,13 +32,13 @@ public class Bot : SeaBattle.IPlayer
 	public IntegerVector2 GetTarget(Cell[,] attackMap)
 	{
 		// pick random position what is not miss, if hit, pick random position around it
-		Random random = new Random();
-		int x = random.Next(Configuration.size);
-		int y = random.Next(Configuration.size);
+		SafeRandom safeRandom = new SafeRandom();
+		int x = safeRandom.Next(Configuration.size);
+		int y = safeRandom.Next(Configuration.size);
 		while (attackMap[x,y].IsHitOrMiss ())
 		{
-			x = random.Next(Configuration.size);
-			y = random.Next(Configuration.size);
+			x = safeRandom.Next(Configuration.size);
+			y = safeRandom.Next(Configuration.size);
 		}
 
 		return new IntegerVector2(x, y);

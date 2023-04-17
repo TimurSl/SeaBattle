@@ -5,15 +5,15 @@ namespace SeaBattle;
 
 public class LevelGenerator
 {
+
+
 	public static Cell[,] GenerateLevel()
 	{
-		int seed = Math.Abs(Guid.NewGuid().GetHashCode());
-		Console.WriteLine("Seed: " + seed);
-		Random random = new Random(seed);
+		SafeRandom safeRandom = new SafeRandom();
 
 		Cell[,] level = MakeEmptyMap();
 
-		PlaceShips(ref level, random);
+		PlaceShips(ref level, safeRandom);
 
 		return level;
 	}
@@ -33,7 +33,7 @@ public class LevelGenerator
 		return level;
 	}
 
-	public static void PlaceShips(ref Cell[,] map, Random random)
+	public static void PlaceShips(ref Cell[,] map, SafeRandom safeRandom)
 	{
 		var ships = Enum.GetValues(typeof(ShipType)).Cast<ShipType> ();
 		foreach (var ship in ships)
@@ -41,7 +41,7 @@ public class LevelGenerator
 			ShipConfiguration shipConfiguration = GetShipConfiguration(ship);
 			for (int i = 0; i < shipConfiguration.count; i++)
 			{
-				PlaceShip(ref map, ship, random, shipConfiguration.length);
+				PlaceShip(ref map, ship, safeRandom, shipConfiguration.length);
 			}
 		}
 	}
@@ -51,7 +51,7 @@ public class LevelGenerator
 		return ShipConfigurations[cellType];
 	}
 
-	private static void PlaceShip(ref Cell[,] map, ShipType ship, Random random, int length = 1)
+	private static void PlaceShip(ref Cell[,] map, ShipType ship, SafeRandom safeRandom, int length = 1)
 	{
 		int x, y;
 		bool isPlaced = false;
@@ -59,11 +59,11 @@ public class LevelGenerator
 		while (!isPlaced)
 		{
 			// Generate a random starting position for the ship
-			x = random.Next(map.GetLength(0));
-			y = random.Next(map.GetLength(1));
+			x = safeRandom.Next(map.GetLength(0));
+			y = safeRandom.Next(map.GetLength(1));
 
 			// Generate a random orientation for the ship (0 = horizontal, 1 = vertical)
-			int orientation = random.Next(2);
+			int orientation = safeRandom.Next(1);
 
 			// Check if the ship can be placed in the selected orientation without going out of bounds
 			if ((orientation == 0 && x + length <= map.GetLength(0)) ||
