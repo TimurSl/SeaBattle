@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using SeaBattle.Extensions;
 using SeaBattle.Types;
 using static SeaBattle.Configuration;
 
@@ -34,22 +35,17 @@ public class LevelGenerator
 
 	public static void PlaceShips(ref Cell[,] map)
 	{
-		var ships = Enum.GetValues(typeof(ShipType)).Cast<ShipType> ();
-		ships = ships.Reverse();
+		var ships = ShipConfigurations;
+		ships = ships.Sort(SortTypes.FromLongestToShortest);
 		foreach (var ship in ships)
 		{
-			ShipConfiguration shipConfiguration = GetShipConfiguration(ship);
-			for (int i = 0; i < shipConfiguration.count; i++)
+			for (int i = 0; i < ship.Value.count; i++)
 			{
-				PlaceShip(ref map, ship, shipConfiguration.length);
+				PlaceShip(ref map, ship.Key, ship.Value.length);
 			}
 		}
 	}
-
-	private static ShipConfiguration GetShipConfiguration(ShipType cellType)
-	{
-		return ShipConfigurations[cellType];
-	}
+	
 
 	private static void PlaceShip(ref Cell[,] map, ShipType ship, int length = 1)
 	{
