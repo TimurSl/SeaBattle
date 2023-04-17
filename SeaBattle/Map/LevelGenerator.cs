@@ -35,6 +35,7 @@ public class LevelGenerator
 	public static void PlaceShips(ref Cell[,] map)
 	{
 		var ships = Enum.GetValues(typeof(ShipType)).Cast<ShipType> ();
+		ships = ships.Reverse();
 		foreach (var ship in ships)
 		{
 			ShipConfiguration shipConfiguration = GetShipConfiguration(ship);
@@ -56,8 +57,7 @@ public class LevelGenerator
 		bool isPlaced = false;
 		int xLength = map.GetLength(0);
 		int yLength = map.GetLength(1);
-		Console.WriteLine($"X: {xLength}, Y: {yLength}");
-				
+
 		while (!isPlaced)
 		{
 			// Generate a random starting position for the ship
@@ -127,10 +127,6 @@ public class LevelGenerator
 					}
 
 					isPlaced = true;
-				}
-				else
-				{
-					Console.WriteLine($"Ship overlaps with another ship! Ship: {ship}, Length: {length}");
 				}
 			}
 		}
