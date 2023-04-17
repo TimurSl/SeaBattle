@@ -7,7 +7,10 @@ public class LevelGenerator
 {
 	public static Cell[,] GenerateLevel()
 	{
-		Random random = new Random(1);
+		int seed = Math.Abs(Guid.NewGuid().GetHashCode());
+		Console.WriteLine("Seed: " + seed);
+		Random random = new Random(seed);
+
 		Cell[,] level = MakeEmptyMap();
 
 		PlaceShips(ref level, random);
@@ -35,36 +38,23 @@ public class LevelGenerator
 		var ships = Enum.GetValues(typeof(ShipType)).Cast<ShipType> ();
 		foreach (var ship in ships)
 		{
-			int shipCount = GetShipCount(ship);
-			for (int i = 0; i < shipCount; i++)
+			ShipConfiguration shipConfiguration = GetShipConfiguration(ship);
+			for (int i = 0; i < shipConfiguration.count; i++)
 			{
-				PlaceShip(ref map, ship, random);
+				PlaceShip(ref map, ship, random, shipConfiguration.length);
 			}
 		}
 	}
 
-	private static int GetShipCount(ShipType cellType)
+	private static ShipConfiguration GetShipConfiguration(ShipType cellType)
 	{
-		switch (cellType)
-		{
-			case ShipType.Small:
-				return maxSmallShips;
-			case ShipType.Medium:
-				return maxMediumShips;
-			case ShipType.Large:
-				return maxLargeShips;
-			case ShipType.Huge:
-				return maxHugeShips;
-		}
-
-		return 0;
+		return ShipConfigurations[cellType];
 	}
 
-	private static void PlaceShip(ref Cell[,] map, ShipType ship, Random random)
+	private static void PlaceShip(ref Cell[,] map, ShipType ship, Random random, int length = 1)
 	{
 		int x, y;
 		bool isPlaced = false;
-		int length = (int) ship;
 
 		while (!isPlaced)
 		{

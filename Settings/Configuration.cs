@@ -3,12 +3,7 @@ namespace SeaBattle;
 public class Configuration
 {
 	public const int size = 10;
-
-	public const int maxSmallShips = 4;
-	public const int maxMediumShips = 3;
-	public const int maxLargeShips = 2;
-	public const int maxHugeShips = 1;
-
+	
 	public static readonly Dictionary<int, Pixel> PixelMap = new()
 	{
 		{ (int) CellType.Nothing, new Pixel { Color = ConsoleColor.White, Char = '_' } },
@@ -22,6 +17,14 @@ public class Configuration
 		{ (int) ShipType.Medium, new Pixel { Color = ConsoleColor.Blue, Char = 'M' } },
 		{ (int) ShipType.Large, new Pixel { Color = ConsoleColor.Cyan, Char = 'L' } },
 		{ (int) ShipType.Huge, new Pixel { Color = ConsoleColor.DarkCyan, Char = 'H' } },
+	};
+
+	public static readonly Dictionary<ShipType, ShipConfiguration> ShipConfigurations = new()
+	{
+		{ ShipType.Small, new ShipConfiguration { length = 1, count = 4 } },
+		{ ShipType.Medium, new ShipConfiguration { length = 2, count = 3 } },
+		{ ShipType.Large, new ShipConfiguration { length = 3, count = 2 } },
+		{ ShipType.Huge, new ShipConfiguration { length = 4, count = 1 } }
 	};
 
 	public enum CellType
@@ -47,4 +50,10 @@ public struct Pixel
 {
 	public ConsoleColor Color;
 	public char Char;
+}
+
+public struct ShipConfiguration
+{
+	public int length;
+	public int count;
 }
