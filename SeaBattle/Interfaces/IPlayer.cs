@@ -8,8 +8,7 @@ public interface IPlayer
 	public Map GetAttackMap();
 	public IntegerVector2 GetTarget(Cell[,] attackMap);
 	public string ToString();
-	protected int MapSeed { get; set; }
-	
+
 	public virtual void Attack(IPlayer target, IntegerVector2 coordinates)
 	{
 		// check coordinates

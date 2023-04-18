@@ -9,9 +9,9 @@ public class HumanPlayer : SeaBattle.IPlayer
 	public Map DefenseMap;
 	public Map AttackMap;
 	private IntegerVector2 cursorPosition = new IntegerVector2(0, 0);
-	public int MapSeed { get; set; }
 
-	public HumanPlayer(string name = "", int mapSeed = 0)
+
+	public HumanPlayer(string name = "")
 	{
 		if (name.Length == 0)
 		{
@@ -23,7 +23,6 @@ public class HumanPlayer : SeaBattle.IPlayer
 		{
 			Name = name;
 		}
-		MapSeed = mapSeed;
 		DefenseMap = new Map(LevelCreationType.Random, useLastHit:true);
 		AttackMap = new Map(LevelCreationType.Empty, true);
 	}

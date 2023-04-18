@@ -9,15 +9,13 @@ public class Bot : SeaBattle.IPlayer
 	public Map AttackMap;
 
 	private string name = "Bot";
-	public int MapSeed { get; set; }
-	
+
 	private Random random = new Random();
 
 	
-	public Bot(string name = "Bot", int mapSeed = 0)
+	public Bot(string name = "Bot")
 	{
 		this.name = name;
-		MapSeed = mapSeed;
 		DefenseMap = new Map (useLastHit:true);
 		AttackMap = new Map(LevelCreationType.Empty, true);
 	}

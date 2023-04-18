@@ -6,7 +6,7 @@ public class Configuration
 	
 	public static readonly Dictionary<int, Pixel> PixelMap = new()
 	{
-		{ (int) CellType.Nothing, new Pixel { Color = ConsoleColor.White, Char = '_' } },
+		{ (int) CellType.Nothing, new Pixel { Color = ConsoleColor.DarkBlue, Char = '_' } },
 		{ (int) CellType.Ship, new Pixel { Color = ConsoleColor.DarkBlue, Char = 'S' } },
 		{ (int) CellType.Hit, new Pixel { Color = ConsoleColor.Red, Char = 'X' } },
 		{ (int) CellType.Miss, new Pixel { Color = ConsoleColor.Yellow, Char = 'x' } }

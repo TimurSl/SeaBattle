@@ -47,8 +47,6 @@ public class Map
 	{
 		Console.BackgroundColor = ConsoleColor.DarkBlue;
 		Console.ForegroundColor = ConsoleColor.White;
-		// if x > 9, draw 1 whitespace, else draw 2 whitespaces
-		// get amount of numbers in x
 		x++;
 		int digits = (int) Math.Floor(Math.Log10(Configuration.size) + 1);
 		int xDigits = (int) Math.Floor(Math.Log10(x) + 1);
