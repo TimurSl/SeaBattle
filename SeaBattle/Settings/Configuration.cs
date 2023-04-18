@@ -24,7 +24,7 @@ public class Configuration
 		{ ShipType.Small, new ShipConfiguration { length = 1, count = 4 } },
 		{ ShipType.Medium, new ShipConfiguration { length = 2, count = 3 } },
 		{ ShipType.Large, new ShipConfiguration { length = 3, count = 2 } },
-		{ ShipType.Huge, new ShipConfiguration { length = 4, count = 1 } }
+		{ ShipType.Huge, new ShipConfiguration { length = 4, count = 1 } },
 	};
 
 	public enum CellType
@@ -42,7 +42,7 @@ public class Configuration
 		Small = 1,
 		Medium = 2,
 		Large = 3,
-		Huge = 4
+		Huge = 4,
 	}
 }
 
