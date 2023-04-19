@@ -14,8 +14,8 @@ SeaBattle is a classic strategy game where two players compete against each othe
 
 To get started with the game, simply clone the repository and open it in your preferred C# IDE. The code is organized into several files:
 
-- `Game.cs` contains the main game loop and user interface.
-- `LevelGenerator.cs` defines the game board and provides methods for placing and checking ships.
+- `Game.cs` contains the main game loop.
+- `Map.cs` defines the game board and provides methods for placing and checking ships.
 - `Cell.cs` defines the ship class and provides methods for checking if a ship has been hit or sunk.
 
 To run the game, simply compile and run the `Program.cs` file. The game will start with the computer randomly placing its ships on the board, and then prompt you to place your own ships. Once both players have placed their ships, the game will begin.
