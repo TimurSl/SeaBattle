@@ -1,10 +1,10 @@
-﻿using SeaBattle.Types;
+﻿using SeaBattle.MapCreators;
 
 namespace SeaBattle;
 
 public class Map
 {
-	public Cell[,] Grid;
+	public readonly Cell[,] Grid;
 	public IntegerVector2 cursorPosition;
 	bool showCursor;
 	public IntegerVector2 lastHit = new IntegerVector2(-1, -1);
@@ -22,7 +22,6 @@ public class Map
 				break;
 			case LevelCreationType.Manual:
 				Grid = ManualMapCreator.GetLevel ();
-				// TODO: manual level creation
 				break;
 		}
 		this.showCursor = showCursor;
@@ -79,7 +78,7 @@ public class Map
 			{
 				Console.Write("|");
 
-				if (Grid[x, y].IsShip ())
+				if (Grid[x, y].CellType == Configuration.CellType.Ship)
 				{
 					Ship ship = (Ship) Grid[x, y];
 

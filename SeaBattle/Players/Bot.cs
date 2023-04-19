@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using SeaBattle.Types;
 
 namespace SeaBattle.Players;
 
@@ -34,7 +33,7 @@ public class Bot : SeaBattle.IPlayer
 	{
 		int x = random.Next(Configuration.size);
 		int y = random.Next(Configuration.size);
-		while (attackMap[x,y].IsHitOrMiss ())
+		while (attackMap[x,y].IsAlreadyHit ())
 		{
 			x = random.Next(Configuration.size);
 			y = random.Next(Configuration.size);

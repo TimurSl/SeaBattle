@@ -5,7 +5,7 @@ namespace SeaBattle;
 public class Cell
 {
 	public IntegerVector2 Position;
-	public CellType CellType;
+	public CellType CellType { get; set; }
 
 	public Cell(IntegerVector2 position, CellType cellType)
 	{
@@ -19,17 +19,12 @@ public class Cell
 		CellType = CellType.Nothing;
 	}
 
-	public virtual void ProcessHit()
+	public virtual void ProcessDefenseHit()
 	{
 		CellType = CellType.Miss;
 	}
 	
-	public virtual bool IsShip()
-	{
-		return CellType == CellType.Ship;
-	}
-	
-	public bool IsAlreadyDestroyed()
+	public bool IsAlreadyHit()
 	{
 		return CellType == CellType.Hit || CellType == CellType.Miss;
 	}
@@ -43,13 +38,8 @@ public class Cell
 	{
 		return PixelMap[(int) CellType].Color;
 	}
-	
-	public bool IsHitOrMiss()
-	{
-		return CellType == CellType.Hit || CellType == CellType.Miss;
-	}
-	
-	public virtual void ProcessHit(Map map, IntegerVector2 coords)
+
+	public virtual void ProcessAttackHit(Map map, IntegerVector2 coords)
 	{
 		Cell cell = map.Grid[coords.X, coords.Y];
 		if (cell.CellType == CellType.Ship)

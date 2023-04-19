@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics;
 using SeaBattle.Extensions;
-using SeaBattle.Types;
 using static SeaBattle.Configuration;
 
 namespace SeaBattle;
 
 public class LevelGenerator
 {
-	private static Random random;
+	private static Random? random;
+
 	public static Cell[,] GenerateLevel()
 	{
-		random = new Random();
-		Cell[,] level = MakeEmptyMap();
+		random = new Random ();
+		var level = MakeEmptyMap ();
 
 		PlaceShips(ref level);
 
@@ -20,7 +20,7 @@ public class LevelGenerator
 
 	public static Cell[,] MakeEmptyMap()
 	{
-		Cell[,] level = new Cell[size, size];
+		var level = new Cell[size, size];
 		// Initialize the level with empty cells
 		for (int x = 0; x < size; x++)
 		{
@@ -37,7 +37,7 @@ public class LevelGenerator
 	{
 		var ships = ShipConfigurations;
 		ships = ships.Sort(SortTypes.FromLongestToShortest);
-		foreach (var ship in ships)
+		foreach(var ship in ships)
 		{
 			for (int i = 0; i < ship.Value.count; i++)
 			{
@@ -45,11 +45,10 @@ public class LevelGenerator
 			}
 		}
 	}
-	
+
 
 	private static void PlaceShip(ref Cell[,] map, ShipType ship, int length = 1)
 	{
-		int x, y;
 		bool isPlaced = false;
 		int xLength = map.GetLength(0);
 		int yLength = map.GetLength(1);
@@ -57,8 +56,8 @@ public class LevelGenerator
 		while (!isPlaced)
 		{
 			// Generate a random starting position for the ship
-			x = random.Next(xLength);
-			y = random.Next(yLength);
+			int x = random.Next(xLength);
+			int y = random.Next(yLength);
 
 			// Generate a random orientation for the ship (0 = horizontal, 1 = vertical)
 			int orientation = random.Next(2);
@@ -115,8 +114,9 @@ public class LevelGenerator
 						shipCells[i] = shipObj;
 						map[cx, cy] = shipObj;
 					}
+
 					// add all cells to all cells
-					foreach (var cell1 in shipCells)
+					foreach(var cell1 in shipCells)
 					{
 						var cell = (Ship) cell1;
 						cell.ShipCells = shipCells;

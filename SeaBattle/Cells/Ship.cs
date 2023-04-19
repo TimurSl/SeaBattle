@@ -2,20 +2,19 @@ namespace SeaBattle;
 
 public class Ship : Cell
 {
-	public IntegerVector2 Position;
 	public Cell[] ShipCells;
-	public Configuration.ShipType ShipType;
+	private Configuration.ShipType shipType;
 	
 	public Ship(IntegerVector2 position, Configuration.ShipType ship) : base(position)
 	{
-		Position = position;
-		CellType = Configuration.CellType.Ship;
-		ShipType = ship;
+		base.CellType = Configuration.CellType.Ship;
+		shipType = ship;
+		base.Position = position;
 	}
 	
-	public override void ProcessHit()
+	public override void ProcessDefenseHit()
 	{
-		CellType = Configuration.CellType.Hit;
+		base.CellType = Configuration.CellType.Hit;
 	}
 	
 	public bool IsAlive()
@@ -29,7 +28,7 @@ public class Ship : Cell
 		{
 			return Configuration.PixelMap[(int) Configuration.CellType.Hit].Char;
 		}
-		return Configuration.ShipPixelMap[(int) ShipType].Char;
+		return Configuration.ShipPixelMap[(int) shipType].Char;
 	}
 
 	public override ConsoleColor GetCellColor()
@@ -38,11 +37,7 @@ public class Ship : Cell
 		{
 			return Configuration.PixelMap[(int) Configuration.CellType.Hit].Color;
 		}
-		return Configuration.ShipPixelMap[(int) ShipType].Color;
+		return Configuration.ShipPixelMap[(int) shipType].Color;
 	}
-
-	public override bool IsShip()
-	{
-		return true;
-	}
+	
 }

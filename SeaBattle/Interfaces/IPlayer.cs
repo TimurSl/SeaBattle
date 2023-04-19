@@ -19,10 +19,13 @@ public interface IPlayer
 		}
 		Cell targetCell = target.GetDefenseMap().Grid[coordinates.X, coordinates.Y];
 		
-		GetAttackMap ().Grid[coordinates.X, coordinates.Y].ProcessHit (target.GetDefenseMap (), coordinates);
-		targetCell.ProcessHit ();
+		// attack target at attacker attack map
+		GetAttackMap ().Grid[coordinates.X, coordinates.Y].ProcessAttackHit (target.GetDefenseMap (), coordinates);
+		
+		// attack target at target defense map
+		targetCell.ProcessDefenseHit ();
 
-		if (targetCell.IsShip ())
+		if (targetCell.CellType == Configuration.CellType.Ship)
 		{
 			Ship ship = (Ship) targetCell;
 			if (!ship.IsAlive ())

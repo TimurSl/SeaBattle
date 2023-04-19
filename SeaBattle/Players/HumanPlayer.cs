@@ -77,11 +77,11 @@ public class HumanPlayer : SeaBattle.IPlayer
 					MoveCursorTo(new IntegerVector2(0, 1));
 					break;
 				case ConsoleKey.Enter:
-					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyDestroyed ())
+					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyHit ())
 						break;
 					return cursorPosition;
 				case ConsoleKey.Spacebar:
-					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyDestroyed ())
+					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyHit ())
 						break;
 					return cursorPosition;
 			}

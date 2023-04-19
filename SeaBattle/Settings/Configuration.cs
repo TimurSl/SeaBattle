@@ -26,7 +26,16 @@ public class Configuration
 		{ ShipType.Large, new ShipConfiguration { length = 3, count = 2 } },
 		{ ShipType.Huge, new ShipConfiguration { length = 4, count = 1 } },
 	};
+	
+	public static readonly Dictionary<int, ManualObjectConfiguration> ManualObjectConfigurations = new()
+	{
+		{ (int) ShipType.Small, new ManualObjectConfiguration(4) },
+		{ (int) ShipType.Medium, new ManualObjectConfiguration(3) },
+		{ (int) ShipType.Large, new ManualObjectConfiguration(2) },
+		{ (int) ShipType.Huge, new ManualObjectConfiguration (1) },
+	};
 
+	[Flags]
 	public enum CellType
 	{
 		Nothing = 0,
@@ -37,6 +46,7 @@ public class Configuration
 		Hit = -2
 	}
 	
+	[Flags]
 	public enum ShipType
 	{
 		Small = 1,
@@ -56,4 +66,14 @@ public struct ShipConfiguration
 {
 	public int length;
 	public int count;
+}
+
+public struct ManualObjectConfiguration
+{
+	public int maxCount = 1;
+	
+	public ManualObjectConfiguration(int maxCount)
+	{
+		this.maxCount = maxCount;
+	}
 }

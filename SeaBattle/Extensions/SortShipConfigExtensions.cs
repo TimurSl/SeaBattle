@@ -20,6 +20,8 @@ public static class SortShipConfigExtensions
 					sortedDict.Add(ship.Key, ship.Value);
 				}
 				break;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(type), type, "No such sort type");
 		}
 
 		return sortedDict;
