@@ -77,3 +77,17 @@ public struct ManualObjectConfiguration
 		this.maxCount = maxCount;
 	}
 }
+
+public enum GameModes
+{
+	PvP,
+	PvB,
+	BvB,
+}
+
+public enum BotDifficulties
+{
+	PatrickStar,
+	Honest,
+	Hard,
+}
