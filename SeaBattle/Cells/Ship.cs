@@ -40,4 +40,5 @@ public class Ship : Cell
 		return Configuration.ShipPixelMap[(int) shipType].Color;
 	}
 	
+	
 }

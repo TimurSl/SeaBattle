@@ -29,6 +29,11 @@ public class Cell
 		return CellType == CellType.Hit || CellType == CellType.Miss;
 	}
 	
+	public bool InBounds()
+	{
+		return Position.X >= 0 && Position.X < Configuration.size && Position.Y >= 0 && Position.Y < Configuration.size;
+	}
+	
 	public virtual char GetCellChar()
 	{
 		return PixelMap[(int) CellType].Char;
@@ -53,4 +58,5 @@ public class Cell
 			CellType = CellType.Miss;
 		}
 	}
+	
 }

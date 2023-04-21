@@ -78,16 +78,16 @@ public struct ManualObjectConfiguration
 	}
 }
 
-public enum GameModes
-{
-	PvP,
-	PvB,
-	BvB,
-}
 
 public enum BotDifficulties
 {
 	PatrickStar,
 	Honest,
 	Hard,
+}
+
+public enum PlayerType
+{
+	Bot = 1,
+	Human = 2,
 }

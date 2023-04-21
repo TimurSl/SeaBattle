@@ -2,40 +2,40 @@ using System.Collections;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using SeaBattle.Players;
+using SeaBattle.Players.Inputs;
+using SeaBattle.Players.Inputs.Bot;
 
 namespace SeaBattle;
 
 
 public class Game
 {
-	static List<IPlayer> players = new List<IPlayer> ()
+	public static List<Player> players = new List<Player> ()
 	{
-		new HumanPlayer(),
-		new Bot("Bot 1"),
+		
 	};
-	private Queue<IPlayer> playersQueue = new Queue<IPlayer>(players);
+	private Queue<Player> playersQueue = new Queue<Player>(players);
 	
 
 	public void Start()
 	{
-		Console.ReadKey();
+		Menu menu = new Menu();
+		menu.OpenMenu();
+		
+		players = menu.GetPlayers();
+		playersQueue = new Queue<Player>(players);
+		
 		Console.Clear();
 		
 		// render first player's map
 		while (CanGameRun ())
 		{
-			IPlayer attacker = playersQueue.Dequeue();
+			Player attacker = playersQueue.Dequeue();
 			playersQueue.Enqueue(attacker);
 			
-			IPlayer defender = playersQueue.Peek();
+			Player defender = playersQueue.Peek();
 			
-			if (attacker.GetType () != typeof(Bot))
-			{
-				Console.WriteLine("Player {0}'s turn, you will be attack {1}", attacker.GetName (),
-					defender.GetName ());
-				Console.WriteLine("Press any key to continue.");
-				Console.ReadKey ();
-			}
+			TurnText (attacker, defender);
 
 			Turn(attacker,defender);
 			
@@ -43,28 +43,47 @@ public class Game
 		}
 	}
 
-	public void Turn(IPlayer attacker, IPlayer defender)
+	private static void TurnText(Player attacker, Player defender)
 	{
-		IntegerVector2 target = attacker.GetTarget(defender.GetAttackMap().Grid);
-		attacker.Attack(defender, target);
+		if (attacker.IsBot () && defender.IsBot ())
+		{
+			Console.WriteLine("Bot {0}'s turn, he will be attack {1}", attacker.GetName (),
+				defender.GetName ());
+			attacker.DefenseMap.RenderMap ();
+			attacker.AttackMap.RenderMap ();
+			Thread.Sleep(1000);
+		}
+		else
+		{
+			Console.WriteLine("Player {0}'s turn, you will be attack {1}", attacker.GetName (),
+				defender.GetName ());
+			Console.WriteLine("Press any key to continue.");
+			Console.ReadKey ();
+		}
 	}
 
-
-
-	bool CanGameRun()
+	public bool IsBvB()
 	{
-		List<IPlayer> hasShips = new List<IPlayer>();
-		hasShips.Clear();
-		// check all players
-		foreach (IPlayer player in players)
+		foreach(Player player in players)
 		{
-			// find the player who has at least one ship left
-			if (player.GetDefenseMap().HasShips ())
+			if (!player.IsBot ())
 			{
-				hasShips.Add(player);
+				return false;
 			}
 		}
-		
+		return true;
+	}
+
+	public void Turn(Player attacker, Player defender)
+	{
+		IntegerVector2 target = attacker.GetTarget(attacker, defender);
+		attacker.Attack(defender, target);
+	}
+	
+	bool CanGameRun()
+	{
+		var hasShips = GetAllPlayersThatHasShips ();
+
 		// if there is only one player with ships left, he has won the game
 		if (hasShips.Count == 1)
 		{
@@ -73,5 +92,22 @@ public class Game
 		}
 
 		return true;
+	}
+
+	private static List<Player> GetAllPlayersThatHasShips()
+	{
+		List<Player> hasShips = new List<Player> ();
+		hasShips.Clear ();
+		// check all players
+		foreach(Player player in players)
+		{
+			// find the player who has at least one ship left
+			if (player.DefenseMap.HasShips ())
+			{
+				hasShips.Add(player);
+			}
+		}
+
+		return hasShips;
 	}
 }

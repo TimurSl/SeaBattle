@@ -9,6 +9,7 @@ public class Map
 	bool showCursor;
 	public IntegerVector2 lastHit = new IntegerVector2(-1, -1);
 	bool useLastHit = false;
+	private ConsoleColor coolBackgroundColor;
 
 	public Map(LevelCreationType levelType = LevelCreationType.Random, bool showCursor = false, bool useLastHit = false)
 	{
@@ -26,11 +27,13 @@ public class Map
 		}
 		this.showCursor = showCursor;
 		this.useLastHit = useLastHit;
+		Random r = new Random();
+		coolBackgroundColor = (ConsoleColor)r.Next(1,15);
 	}
 	
-	private static void DrawLetters(Cell[,] map)
+	private void DrawLetters(Cell[,] map)
 	{
-		Console.BackgroundColor = ConsoleColor.DarkBlue;
+		Console.BackgroundColor = coolBackgroundColor;
 		Console.ForegroundColor = ConsoleColor.White;
 		Console.Write("   |");
 		for (int x = 0; x < map.GetLength(0); x++)
@@ -42,9 +45,10 @@ public class Map
 		Console.ResetColor();
 	}
 	
-	private static void DrawNumber(int x)
+	
+	private void DrawNumber(int x)
 	{
-		Console.BackgroundColor = ConsoleColor.DarkBlue;
+		Console.BackgroundColor = coolBackgroundColor;
 		Console.ForegroundColor = ConsoleColor.White;
 		x++;
 		int digits = (int) Math.Floor(Math.Log10(Configuration.size) + 1);
