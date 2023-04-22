@@ -38,7 +38,7 @@ public class Menu
 		{
 			Console.WriteLine($"{(int) type} - {type}");
 		}
-		Console.Write("Player type: ");
+		Console.Write("Player type (default: 1): ");
 		string playerT = Console.ReadLine () ?? "1";
 		if (playerT == "")
 			playerT = "1";
@@ -55,7 +55,7 @@ public class Menu
 			{
 				Console.WriteLine($"{(int) diff} - {diff}");
 			}
-			Console.Write("Bot difficulty: ");
+			Console.Write("Bot difficulty (default: 1): ");
 			string difficulty = Console.ReadLine () ?? "1";
 			if (difficulty == "")
 				difficulty = "1";
