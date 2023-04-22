@@ -27,16 +27,16 @@ public class PlayerArrowInput : IInput
 			switch (key.Key)
 			{
 				case ConsoleKey.UpArrow:
-					MoveCursorTo(new IntegerVector2(-1, 0));
+					MoveCursor(new IntegerVector2(-1, 0));
 					break;
 				case ConsoleKey.DownArrow:
-					MoveCursorTo(new IntegerVector2(1, 0));
+					MoveCursor(new IntegerVector2(1, 0));
 					break;
 				case ConsoleKey.LeftArrow:
-					MoveCursorTo(new IntegerVector2(0, -1));
+					MoveCursor(new IntegerVector2(0, -1));
 					break;
 				case ConsoleKey.RightArrow:
-					MoveCursorTo(new IntegerVector2(0, 1));
+					MoveCursor(new IntegerVector2(0, 1));
 					break;
 				case ConsoleKey.Enter:
 					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyHit ())
@@ -46,11 +46,13 @@ public class PlayerArrowInput : IInput
 					if (AttackMap.Grid[cursorPosition.X, cursorPosition.Y].IsAlreadyHit ())
 						break;
 					return cursorPosition;
+				default:
+					break;
 			}
 		}
 	}
 	
-	private void MoveCursorTo(IntegerVector2 direction)
+	private void MoveCursor(IntegerVector2 direction)
 	{
 		// check if cursor is in bounds
 		if (cursorPosition.X + direction.X < 0 || cursorPosition.X + direction.X >= Configuration.size || cursorPosition.Y + direction.Y < 0 || cursorPosition.Y + direction.Y >= Configuration.size)
