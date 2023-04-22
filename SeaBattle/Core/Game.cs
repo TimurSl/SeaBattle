@@ -20,12 +20,7 @@ public class Game
 	public void Start()
 	{
 		Console.Clear();
-		foreach(Player player in players)
-		{
-			player.DefenseMap.ResetMap ();
-			player.AttackMap.ResetMap ();
-		}
-		
+
 		// render first player's map
 		while (CanGameRun ())
 		{ 
@@ -41,6 +36,15 @@ public class Game
 			Turn(attacker,defender);
 			
 			Console.Clear();
+		}
+	}
+
+	private static void ResetMaps()
+	{
+		foreach(Player player in players)
+		{
+			player.DefenseMap.ResetMap ();
+			player.AttackMap.ResetMap ();
 		}
 	}
 
@@ -66,8 +70,12 @@ public class Game
 
 	public void Turn(Player attacker, Player defender)
 	{
-		IntegerVector2 target = attacker.GetTarget(attacker, defender);
-		attacker.Attack(defender, target);
+		do
+		{
+			IntegerVector2 target = attacker.GetTarget(attacker, defender);
+			attacker.Attack(defender, target);
+		} 
+		while (attacker.IsStreak);
 	}
 	
 	bool CanGameRun()
@@ -84,6 +92,7 @@ public class Game
 
 				playersQueue.Clear ();
 				playersQueue = new Queue<Player>(players);
+				ResetMaps ();
 				Thread.Sleep(2000);
 			
 				Start ();

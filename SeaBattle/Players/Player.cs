@@ -18,6 +18,7 @@ public class Player
 	private PlayerType type;
 
 	public IInput Input;
+	public bool IsStreak = false;
 
 	public Player(PlayerParams @params)
 	{
@@ -45,12 +46,19 @@ public class Player
 		targetCell.ProcessDefenseHit ();
 
 		Console.WriteLine($"Attacking {target.Name} at {coordinates.X}, {coordinates.Y}, new status: {targetCell.CellType}");
-		
-		if (targetCell is Ship ship && !ship.IsAlive ())
+
+		if (targetCell is Ship ship)
 		{
-			AttackMap.OutlineShip(ship);
+			if (!ship.IsAlive ())
+			{
+				AttackMap.OutlineShip(ship);
+			}
+			IsStreak = true;
 		}
-		
+		else
+		{
+			IsStreak = false;
+		}
 		
 		target.DefenseMap.lastHit = coordinates;
 	}
