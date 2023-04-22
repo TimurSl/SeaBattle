@@ -1,6 +1,8 @@
-﻿using SeaBattle.MapCreators;
+﻿using SeaBattle.Cells;
+using SeaBattle.Settings;
+using SeaBattle.Types;
 
-namespace SeaBattle;
+namespace SeaBattle.MapCreators.Types;
 
 public class Map
 {
@@ -160,11 +162,4 @@ public class Map
 
 		return false;
 	}
-}
-
-public enum LevelCreationType
-{
-	Empty,
-	Random,
-	Manual,
 }

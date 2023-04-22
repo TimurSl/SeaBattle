@@ -1,4 +1,7 @@
-namespace SeaBattle.Players;
+using SeaBattle.Players.Interfaces;
+using SeaBattle.Settings;
+
+namespace SeaBattle.Players.Types;
 
 public struct PlayerParams
 {

@@ -1,8 +1,11 @@
 using SeaBattle.Players;
 using SeaBattle.Players.Inputs;
 using SeaBattle.Players.Inputs.Bot;
+using SeaBattle.Players.Interfaces;
+using SeaBattle.Players.Types;
+using SeaBattle.Settings;
 
-namespace SeaBattle;
+namespace SeaBattle.Core;
 
 public class Menu
 {

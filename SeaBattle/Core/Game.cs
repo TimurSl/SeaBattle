@@ -1,28 +1,19 @@
-using System.Collections;
-using System.Numerics;
-using System.Text.RegularExpressions;
 using SeaBattle.Players;
-using SeaBattle.Players.Inputs;
-using SeaBattle.Players.Inputs.Bot;
+using SeaBattle.Types;
 
-namespace SeaBattle;
-
+namespace SeaBattle.Core;
 
 public class Game
 {
-	public static List<Player> players = new List<Player> ()
-	{
-		
-	};
-	private Queue<Player> playersQueue = new Queue<Player>(players);
+	public static List<Player> players;
+	private Queue<Player> playersQueue;
 	
-
 	public void Start()
 	{
 		Menu menu = new Menu();
 		menu.OpenMenu();
 		
-		players = menu.GetPlayers();
+		players = new List<Player> (menu.GetPlayers ());
 		playersQueue = new Queue<Player>(players);
 		
 		Console.Clear();
@@ -61,18 +52,7 @@ public class Game
 			Console.ReadKey ();
 		}
 	}
-
-	public bool IsBvB()
-	{
-		foreach(Player player in players)
-		{
-			if (!player.IsBot ())
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+	
 
 	public void Turn(Player attacker, Player defender)
 	{

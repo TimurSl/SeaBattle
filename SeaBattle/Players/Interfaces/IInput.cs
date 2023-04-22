@@ -1,14 +1,8 @@
-using SeaBattle.Players;
-using SeaBattle.Players.Inputs;
+using SeaBattle.Types;
 
-namespace SeaBattle;
+namespace SeaBattle.Players.Interfaces;
 
 public interface IInput
 {
 	public IntegerVector2 GetCoordinates(Player attacker, Player defender);
-}
-
-public struct InputParams
-{
-	public BotDifficulties Difficulty { get; set; }
 }

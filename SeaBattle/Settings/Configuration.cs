@@ -1,4 +1,4 @@
-namespace SeaBattle;
+namespace SeaBattle.Settings;
 
 public class Configuration
 {
@@ -54,40 +54,4 @@ public class Configuration
 		Large = 3,
 		Huge = 4,
 	}
-}
-
-public struct Pixel
-{
-	public ConsoleColor Color;
-	public char Char;
-}
-
-public struct ShipConfiguration
-{
-	public int length;
-	public int count;
-}
-
-public struct ManualObjectConfiguration
-{
-	public int maxCount = 1;
-	
-	public ManualObjectConfiguration(int maxCount)
-	{
-		this.maxCount = maxCount;
-	}
-}
-
-
-public enum BotDifficulties
-{
-	PatrickStar,
-	Honest,
-	Hard,
-}
-
-public enum PlayerType
-{
-	Bot = 1,
-	Human = 2,
 }

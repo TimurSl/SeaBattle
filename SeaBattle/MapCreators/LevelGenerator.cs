@@ -1,8 +1,9 @@
-﻿using System.Diagnostics;
-using SeaBattle.Extensions;
-using static SeaBattle.Configuration;
+﻿using SeaBattle.Cells;
+using SeaBattle.MapCreators.Extensions;
+using SeaBattle.Types;
+using static SeaBattle.Settings.Configuration;
 
-namespace SeaBattle;
+namespace SeaBattle.MapCreators;
 
 public class LevelGenerator
 {

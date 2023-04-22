@@ -1,4 +1,6 @@
-namespace SeaBattle.Extensions;
+using SeaBattle.Settings;
+
+namespace SeaBattle.MapCreators.Extensions;
 
 public static class SortShipConfigExtensions
 {
@@ -26,10 +28,4 @@ public static class SortShipConfigExtensions
 
 		return sortedDict;
 	}
-}
-
-public enum SortTypes
-{
-	FromLongestToShortest,
-	FromShortestToLongest,
 }

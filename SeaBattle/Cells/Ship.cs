@@ -1,4 +1,7 @@
-namespace SeaBattle;
+using SeaBattle.Settings;
+using SeaBattle.Types;
+
+namespace SeaBattle.Cells;
 
 public class Ship : Cell
 {

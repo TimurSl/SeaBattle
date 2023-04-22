@@ -1,3 +1,7 @@
+using SeaBattle.Cells;
+using SeaBattle.MapCreators.Types;
+using SeaBattle.Types;
+
 namespace SeaBattle.MapCreators;
 
 public static class ManualMapCreator

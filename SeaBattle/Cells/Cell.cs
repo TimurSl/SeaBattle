@@ -1,6 +1,9 @@
-﻿using static SeaBattle.Configuration;
+﻿using SeaBattle.MapCreators.Types;
+using SeaBattle.Settings;
+using SeaBattle.Types;
+using static SeaBattle.Settings.Configuration;
 
-namespace SeaBattle;
+namespace SeaBattle.Cells;
 
 public class Cell
 {

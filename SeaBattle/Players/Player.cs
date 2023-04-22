@@ -1,5 +1,11 @@
 using System.Text.RegularExpressions;
+using SeaBattle.Cells;
+using SeaBattle.MapCreators.Types;
 using SeaBattle.Players.Inputs;
+using SeaBattle.Players.Interfaces;
+using SeaBattle.Players.Types;
+using SeaBattle.Settings;
+using SeaBattle.Types;
 
 namespace SeaBattle.Players;
 

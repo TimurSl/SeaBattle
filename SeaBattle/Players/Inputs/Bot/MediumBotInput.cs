@@ -1,3 +1,7 @@
+using SeaBattle.Players.Interfaces;
+using SeaBattle.Settings;
+using SeaBattle.Types;
+
 namespace SeaBattle.Players.Inputs.Bot;
 
 public class MediumBotInput : IInput

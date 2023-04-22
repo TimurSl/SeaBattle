@@ -1,3 +1,8 @@
+using SeaBattle.MapCreators.Types;
+using SeaBattle.Players.Interfaces;
+using SeaBattle.Settings;
+using SeaBattle.Types;
+
 namespace SeaBattle.Players.Inputs;
 
 public class PlayerArrowInput : IInput
