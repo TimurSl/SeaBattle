@@ -1,3 +1,4 @@
+using SeaBattle.Core.Types;
 using SeaBattle.Players;
 using SeaBattle.Types;
 
@@ -8,19 +9,28 @@ public class Game
 	public static List<Player> players;
 	private Queue<Player> playersQueue;
 	
+	private RoundManager roundManager = new RoundManager();
+
+	public Game(GameLaunchParams @params)
+	{
+		players = new List<Player>(@params.Players);
+		playersQueue = new Queue<Player>(players);
+	}
+	
 	public void Start()
 	{
-		Menu menu = new Menu();
-		menu.OpenMenu();
-		
-		players = new List<Player> (menu.GetPlayers ());
-		playersQueue = new Queue<Player>(players);
-		
 		Console.Clear();
+		foreach(Player player in players)
+		{
+			player.DefenseMap.ResetMap ();
+			player.AttackMap.ResetMap ();
+		}
 		
 		// render first player's map
 		while (CanGameRun ())
-		{
+		{ 
+			roundManager.PrintRound ();
+			
 			Player attacker = playersQueue.Dequeue();
 			playersQueue.Enqueue(attacker);
 			
@@ -44,10 +54,10 @@ public class Game
 			attacker.AttackMap.RenderMap ();
 			Thread.Sleep(1000);
 		}
-		else
+
+		if (!attacker.IsBot () && !defender.IsBot ())
 		{
-			Console.WriteLine("Player {0}'s turn, you will be attack {1}", attacker.GetName (),
-				defender.GetName ());
+			Console.WriteLine("Player {0}'s turn, you will be attack {1}", attacker.GetName (), defender.GetName ());
 			Console.WriteLine("Press any key to continue.");
 			Console.ReadKey ();
 		}
@@ -67,8 +77,26 @@ public class Game
 		// if there is only one player with ships left, he has won the game
 		if (hasShips.Count == 1)
 		{
-			Console.WriteLine("Player " + hasShips[0].GetName () + " has won the game!");
-			return false;
+			if (roundManager.CanContinue ())
+			{
+				Console.WriteLine("Player " + hasShips[0].GetName () + " has won the round!");
+				roundManager.NextRound ();
+
+				playersQueue.Clear ();
+				playersQueue = new Queue<Player>(players);
+				Thread.Sleep(2000);
+			
+				Start ();
+			}
+			else
+			{
+				Console.Clear ();
+				Console.WriteLine("Player " + hasShips[0].GetName () + " has won the game!");
+				// Console.WriteLine("Press any key to continue.");
+				// Console.ReadKey ();
+				return false;
+			}
+			
 		}
 
 		return true;

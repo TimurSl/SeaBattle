@@ -3,6 +3,7 @@ namespace SeaBattle.Settings;
 public class Configuration
 {
 	public const int size = 10;
+	public const int rounds = 3;
 	
 	public static readonly Dictionary<int, Pixel> PixelMap = new()
 	{

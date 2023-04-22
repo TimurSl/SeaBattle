@@ -1,3 +1,4 @@
+using SeaBattle.Core.Types;
 using SeaBattle.Players;
 using SeaBattle.Players.Inputs;
 using SeaBattle.Players.Inputs.Bot;
@@ -15,7 +16,8 @@ public class Menu
 	{
 		WelcomeMessage ();
 		PlayerSetup ();
-		Game.players = players;
+		Game game = new Game(new GameLaunchParams () { Players = players });
+		game.Start ();
 	}
 	
 	public List<Player> GetPlayers()

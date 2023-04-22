@@ -1,4 +1,4 @@
 ﻿using SeaBattle.Core;
 
-Game game = new Game();
-game.Start();
+Menu menu = new Menu ();
+menu.OpenMenu ();

@@ -6,36 +6,44 @@ namespace SeaBattle.MapCreators.Types;
 
 public class Map
 {
-	public readonly Cell[,] Grid;
+	public Cell[,] Grid;
+
 	public IntegerVector2 cursorPosition;
-	bool showCursor;
 	public IntegerVector2 lastHit = new IntegerVector2(-1, -1);
-	bool useLastHit = false;
-	private ConsoleColor coolBackgroundColor;
+
+
+	private bool showCursor;
+	private bool useLastHit = false;
+	
+	private ConsoleColor mapBackgroundColor;
+	private LevelCreationType levelType;
 
 	public Map(LevelCreationType levelType = LevelCreationType.Random, bool showCursor = false, bool useLastHit = false)
 	{
-		switch (levelType)
-		{
-			case LevelCreationType.Empty:
-				Grid = LevelGenerator.MakeEmptyMap ();
-				break;
-			case LevelCreationType.Random:
-				Grid = LevelGenerator.GenerateLevel ();
-				break;
-			case LevelCreationType.Manual:
-				Grid = ManualMapCreator.GetLevel ();
-				break;
-		}
+		CreateGrid (levelType);
+		
+		this.levelType = levelType;
 		this.showCursor = showCursor;
 		this.useLastHit = useLastHit;
+		
 		Random r = new Random();
-		coolBackgroundColor = (ConsoleColor)r.Next(1,15);
+		mapBackgroundColor = (ConsoleColor)r.Next(1,15);
 	}
-	
+
+	private void CreateGrid(LevelCreationType levelType)
+	{
+		Grid = levelType switch
+		{
+			LevelCreationType.Empty => LevelGenerator.MakeEmptyMap (),
+			LevelCreationType.Random => LevelGenerator.GenerateLevel (),
+			LevelCreationType.Manual => ManualMapCreator.GetLevel (),
+			_ => Grid
+		};
+	}
+
 	private void DrawLetters(Cell[,] map)
 	{
-		Console.BackgroundColor = coolBackgroundColor;
+		Console.BackgroundColor = mapBackgroundColor;
 		Console.ForegroundColor = ConsoleColor.White;
 		Console.Write("   |");
 		for (int x = 0; x < map.GetLength(0); x++)
@@ -50,7 +58,7 @@ public class Map
 	
 	private void DrawNumber(int x)
 	{
-		Console.BackgroundColor = coolBackgroundColor;
+		Console.BackgroundColor = mapBackgroundColor;
 		Console.ForegroundColor = ConsoleColor.White;
 		x++;
 		int digits = (int) Math.Floor(Math.Log10(Configuration.size) + 1);
@@ -161,5 +169,11 @@ public class Map
 		}
 
 		return false;
+	}
+
+	public void ResetMap()
+	{
+		// regenerate the map
+		CreateGrid(levelType);
 	}
 }
