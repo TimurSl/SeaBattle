@@ -10,6 +10,7 @@ public class Game
 	private Queue<Player> playersQueue;
 	
 	private RoundManager roundManager = new RoundManager();
+	private TurnManager turnManager = new TurnManager();
 
 	public Game(GameLaunchParams @params)
 	{
@@ -31,51 +32,12 @@ public class Game
 			
 			Player defender = playersQueue.Peek();
 			
-			TurnText (attacker, defender);
+			turnManager.TurnText (attacker, defender);
 
-			Turn(attacker,defender);
+			turnManager.Turn(attacker,defender);
 			
 			Console.Clear();
 		}
-	}
-
-	private static void ResetMaps()
-	{
-		foreach(Player player in players)
-		{
-			player.DefenseMap.ResetMap ();
-			player.AttackMap.ResetMap ();
-		}
-	}
-
-	private static void TurnText(Player attacker, Player defender)
-	{
-		if (attacker.IsBot () && defender.IsBot ())
-		{
-			Console.WriteLine("Bot {0}'s turn, he will be attack {1}", attacker.GetName (),
-				defender.GetName ());
-			attacker.DefenseMap.RenderMap ();
-			attacker.AttackMap.RenderMap ();
-			Thread.Sleep(1000);
-		}
-
-		if (!attacker.IsBot () && !defender.IsBot ())
-		{
-			Console.WriteLine("Player {0}'s turn, you will be attack {1}", attacker.GetName (), defender.GetName ());
-			Console.WriteLine("Press any key to continue.");
-			Console.ReadKey ();
-		}
-	}
-	
-
-	public void Turn(Player attacker, Player defender)
-	{
-		do
-		{
-			IntegerVector2 target = attacker.GetTarget(attacker, defender);
-			attacker.Attack(defender, target);
-		} 
-		while (attacker.IsStreak);
 	}
 	
 	bool CanGameRun()
@@ -92,7 +54,7 @@ public class Game
 
 				playersQueue.Clear ();
 				playersQueue = new Queue<Player>(players);
-				ResetMaps ();
+				turnManager.ResetMaps (players);
 				Thread.Sleep(2000);
 			
 				Start ();
