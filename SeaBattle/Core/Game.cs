@@ -10,7 +10,7 @@ public class Game
 	private Queue<Player> playersQueue;
 	
 	private RoundManager roundManager = new RoundManager();
-	private TurnManager turnManager = new TurnManager();
+	private TurnManager turnManager = new();
 
 	public Game(GameLaunchParams @params)
 	{
@@ -49,13 +49,14 @@ public class Game
 		{
 			if (roundManager.CanContinue ())
 			{
+				Console.Clear ();
 				Console.WriteLine("Player " + hasShips[0].GetName () + " has won the round!");
 				roundManager.NextRound ();
-
+				Thread.Sleep(2000);
+				
 				playersQueue.Clear ();
 				playersQueue = new Queue<Player>(players);
 				turnManager.ResetMaps (players);
-				Thread.Sleep(2000);
 			
 				Start ();
 			}
@@ -63,8 +64,6 @@ public class Game
 			{
 				Console.Clear ();
 				Console.WriteLine("Player " + hasShips[0].GetName () + " has won the game!");
-				// Console.WriteLine("Press any key to continue.");
-				// Console.ReadKey ();
 				return false;
 			}
 			

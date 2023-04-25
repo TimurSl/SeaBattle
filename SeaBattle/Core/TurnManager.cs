@@ -22,7 +22,7 @@ public class TurnManager
 				defender.GetName ());
 			attacker.DefenseMap.RenderMap ();
 			attacker.AttackMap.RenderMap ();
-			Thread.Sleep(1000);
+			// Thread.Sleep(1000);
 		}
 
 		if (!attacker.IsBot () && !defender.IsBot ())
@@ -41,6 +41,6 @@ public class TurnManager
 			IntegerVector2 target = attacker.GetTarget(attacker, defender);
 			attacker.Attack(defender, target);
 		} 
-		while (attacker.IsStreak);
+		while (attacker.IsStreak && !attacker.IsBot ());
 	}
 }
