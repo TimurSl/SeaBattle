@@ -4,7 +4,7 @@ namespace SeaBattle.Settings;
 
 public enum BotDifficulties
 {
-	PatrickStar,
-	Honest,
-	Hard,
+	PatrickStar = 0,
+	Honest = 1,
+	Hard = 2,
 }

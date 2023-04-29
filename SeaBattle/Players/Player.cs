@@ -12,13 +12,16 @@ namespace SeaBattle.Players;
 public class Player
 {
 	public string Name { get; set; }
+	public Account.Providers.Account Account { get; set; }
+	
 	public Map DefenseMap;
 	public Map AttackMap;
+	
+	public bool IsStreak = false;
+	public IInput Input;
+	
 	private IntegerVector2 cursorPosition = new IntegerVector2(0, 0);
 	private PlayerType type;
-
-	public IInput Input;
-	public bool IsStreak = false;
 
 	public Player(PlayerParams @params)
 	{

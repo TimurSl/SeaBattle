@@ -1,0 +1,54 @@
+﻿<Window x:Class="SeaBattleLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SeaBattleLauncher"
+        mc:Ignorable="d"
+        SizeToContent="Height"
+        Title="Sea Battle Launcher"
+        Height="Auto" 
+        MinHeight="420"
+        MaxWidth="400"
+        MinWidth="400"
+        Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="120"/>
+            <RowDefinition Height="Auto" MinHeight="70"/>
+            <RowDefinition Height="Auto" MaxHeight="70"/>
+            <RowDefinition Height="Auto" MinHeight="70"/>
+            <RowDefinition Height="Auto" MinHeight="70"/>
+            <RowDefinition Height="Auto" MinHeight="70"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <Label Content="Sea Battle" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Height="72" Width="286" FontSize="48"/>
+            <Label x:Name="PlayerCount" HorizontalContentAlignment="Center" Content="Player 1" FontSize="20"/>
+
+        </StackPanel>
+        
+        <ComboBox x:Name="PlayerTypeComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="344" Height="50" SelectedIndex="1" FontSize="26" >
+            <ComboBoxItem Content="Bot"/>
+            <ComboBoxItem Content="Player"/>
+        </ComboBox>
+
+        <ComboBox x:Name="BotDifficultyComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Width="344" Height="50" SelectedIndex="1" FontSize="26"  Visibility="Collapsed">
+            <ComboBoxItem Content="Patrick Star"/>
+            <ComboBoxItem Content="Honest"/>
+            <ComboBoxItem Content="Hard"/>
+        </ComboBox>
+
+        <TextBox GotFocus="RemoveText" LostFocus="AddText" x:Name="PlayerNameInput" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="344" Height="50" FontSize="24"/>
+
+        <StackPanel Grid.Row="4" Margin="20,10,20,10" Width="344">
+            <ComboBox Text="Account Type" x:Name="AccountTypeComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Center" Height="49" SelectedIndex="0" FontSize="26" Margin="0,0,0,10" AutomationProperties.HelpText="Account Type">
+                <ComboBoxItem Content="Guest"/>
+                <ComboBoxItem Content="Account"/>
+            </ComboBox>
+            <Button x:Name="AuthorizeButton" HorizontalAlignment="Stretch" Content="Authorize" Height="42" FontSize="18" Margin="0,0,0,10" Visibility="Collapsed"/>
+            <Button x:Name="ViewStatsButton" HorizontalAlignment="Stretch" Content="View Stats" Height="42" FontSize="18" Visibility="Collapsed"/>
+        </StackPanel>
+        <Button x:Name="NextPlayerButton" Content="Next Player" Grid.Row="5" Margin="20,10,20,10" FontSize="24" Width="344"/>
+    </Grid>
+</Window>

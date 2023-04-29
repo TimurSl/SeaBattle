@@ -1,5 +1,6 @@
 using SeaBattle.Core.Types;
 using SeaBattle.Players;
+using SeaBattle.Settings;
 using SeaBattle.Types;
 
 namespace SeaBattle.Core;
@@ -16,6 +17,8 @@ public class Game
 	{
 		players = new List<Player>(@params.Players);
 		playersQueue = new Queue<Player>(players);
+		roundManager.InitializeScores(players);
+
 	}
 	
 	public void Start()
@@ -42,6 +45,14 @@ public class Game
 	
 	bool CanGameRun()
 	{
+		if (roundManager.IsGameOver ())
+		{
+			Player winner = roundManager.GetWinner ();
+			
+			Console.Clear ();
+			Console.WriteLine("Player " + winner.GetName () + " has won the game!");
+			return false;
+		}
 		var hasShips = GetAllPlayersThatHasShips ();
 
 		// if there is only one player with ships left, he has won the game
@@ -50,23 +61,18 @@ public class Game
 			if (roundManager.CanContinue ())
 			{
 				Console.Clear ();
-				Console.WriteLine("Player " + hasShips[0].GetName () + " has won the round!");
-				roundManager.NextRound ();
+				roundManager.NextRound (hasShips[0]);
+
+				Console.WriteLine($"Player {hasShips[0].GetName ()} has won the round!, he has {roundManager.scores[hasShips[0]]} / {Configuration.roundsToWin} points!");
 				Thread.Sleep(2000);
 				
 				playersQueue.Clear ();
 				playersQueue = new Queue<Player>(players);
-				turnManager.ResetMaps (players);
+				turnManager.ResetMaps (players); 
 			
 				Start ();
 			}
-			else
-			{
-				Console.Clear ();
-				Console.WriteLine("Player " + hasShips[0].GetName () + " has won the game!");
-				return false;
-			}
-			
+
 		}
 
 		return true;
