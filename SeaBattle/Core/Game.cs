@@ -51,6 +51,7 @@ public class Game
 			
 			Console.Clear ();
 			Console.WriteLine("Player " + winner.GetName () + " has won the game!");
+			Thread.Sleep(2000);
 			return false;
 		}
 		var hasShips = GetAllPlayersThatHasShips ();
@@ -63,7 +64,7 @@ public class Game
 				Console.Clear ();
 				roundManager.NextRound (hasShips[0]);
 
-				Console.WriteLine($"Player {hasShips[0].GetName ()} has won the round!, he has {roundManager.scores[hasShips[0]]} / {Configuration.roundsToWin} points!");
+				Console.WriteLine($"Player {hasShips[0].GetName ()} has won the round!, he has {roundManager.scores[hasShips[0]] - 1} / {Configuration.roundsToWin} points!");
 				Thread.Sleep(2000);
 				
 				playersQueue.Clear ();
