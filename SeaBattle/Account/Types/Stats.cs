@@ -1,5 +1,6 @@
 namespace SeaBattle.Account.Providers;
 
+[Serializable]
 public struct Stats
 {
 	public int Wins { get; set; }
