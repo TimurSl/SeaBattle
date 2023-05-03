@@ -4,11 +4,11 @@ public class GuestProvider : IAccountProvider
 {
 	public Account GetAccount(string login, string password)
 	{
-		return new Account(login, password, new Stats(0));
+		return new Account(login, password, new Stats(0), this);
 	}
 
 	public Account ModifyStats(string login, string password, StatsData newStats)
 	{
-		return new Account(login, password, new Stats(0));
+		return new Account(login, password, new Stats(0), this);
 	}
 }

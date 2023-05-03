@@ -6,7 +6,7 @@ namespace SeaBattleLauncher;
 public partial class AuthWindow : Window
 {
 	public Account account;
-	private IAccountProvider AccountProvider = new WebAccountProvider();
+	private IAccountProvider AccountProvider = new XMLProvider();
 	public AuthWindow()
 	{
 		InitializeComponent ();

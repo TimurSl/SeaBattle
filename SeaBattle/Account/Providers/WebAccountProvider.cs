@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace SeaBattle.Account.Providers;
 
+/// <summary>
+/// Dont use this yet
+/// </summary>
 public class WebAccountProvider : IAccountProvider
 {
 	private readonly string registerUrl = "https://zenisoft.net.ua/seabattle/register.php";
@@ -23,7 +26,7 @@ public class WebAccountProvider : IAccountProvider
 		
 		if (response == "{\"success\":false}" || string.IsNullOrEmpty(response))
 		{
-			return new Account($"ERROR: {response}", "", new Stats(0));
+			return new Account($"ERROR: {response}", "", new Stats(0), this);
 		}
 
 		AccountData accountData = JsonConvert.DeserializeObject<AccountData>(response);
@@ -31,7 +34,7 @@ public class WebAccountProvider : IAccountProvider
 		
 		Stats stats = new Stats(int.Parse(statsData.Wins)) {MMR = int.Parse(statsData.Mmr)};
 		
-		return new Account(accountData.Login, accountData.Password, stats);
+		return new Account(accountData.Login, accountData.Password, stats, this);
 	}
 
 	public Account ModifyStats(string login, string password, StatsData newStats)
@@ -47,7 +50,7 @@ public class WebAccountProvider : IAccountProvider
 
 		if (response == "{\"success\":false}" || string.IsNullOrEmpty(response))
 		{
-			return new Account($"ERROR: {response}", "", new Stats(0));
+			return new Account($"ERROR: {response}", "", new Stats(0), this);
 		}
 
 		AccountData accountData = JsonConvert.DeserializeObject<AccountData>(response);
@@ -55,7 +58,7 @@ public class WebAccountProvider : IAccountProvider
 		
 		Stats stats = new Stats(int.Parse(statsData.Wins)) {MMR = int.Parse(statsData.Mmr)};
 		
-		return new Account(accountData.Login, accountData.Password, stats);
+		return new Account(accountData.Login, accountData.Password, stats, this);
 	}
 
 	public string TestModifyStats(string login, string pass, StatsData @new)

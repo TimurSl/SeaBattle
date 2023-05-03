@@ -1,12 +1,13 @@
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using NUnit.Framework.Internal;
 using SeaBattle.Account.Providers;
 
 namespace Tests;
 
 public class AccountTesting
 {
-	private WebAccountProvider provider = new WebAccountProvider();
+	private XMLProvider provider = new XMLProvider();
 	
 	private Account ac;
 	private (string, string) logPass = ("usr", "pass");
@@ -14,12 +15,13 @@ public class AccountTesting
 	[SetUp]
 	public void Setup()
 	{
-		ac = provider.GetAccount(logPass.Item1, logPass.Item2);
+		ac = Account.GetAccount(provider, logPass.Item1, logPass.Item2);
 	}
 
 	[Test(Description = "Проверка на авторизацию")]
 	public void GetAccount()
 	{
+		TestContext.WriteLine($"Login: {ac.Login}, Password: {ac.Password}");
 		Assert.That(ac.Login, Is.EqualTo("usr"));
 	}
 

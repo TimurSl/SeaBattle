@@ -12,13 +12,13 @@ public class RoundManager
 	{
 		foreach (Player player in players)
 		{
-			scores.Add(player, 1);
+			scores.Add(player, 0);
 		}
 	}
 
 	public void NextRound(Player winner)
 	{
-		++scores[winner];
+		scores[winner]++;
 		currentRound++;
 	}
 	

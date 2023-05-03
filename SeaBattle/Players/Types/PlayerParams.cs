@@ -8,4 +8,5 @@ public struct PlayerParams
 	public string Name;
 	public PlayerType Type;
 	public IInput Input;
+	public Account.Providers.Account Account;
 }

@@ -4,14 +4,28 @@ public struct Account
 {
 	public string Login { get; set; }
 	public string Password { get; set; }
-
 	public Stats Stats { get; set; }
 
-	public Account(string login, string password, Stats stats)
+	private IAccountProvider AccountProvider;
+
+	public Account(string login, string password, Stats stats, IAccountProvider provider)
 	{
 		Login = login;
 		Password = password;
 		Stats = stats;
+		AccountProvider = provider;
+	}
+
+	public static Account GetAccount(IAccountProvider provider, string login, string password)
+	{
+		Account account = provider.GetAccount(login, password);
+		return account;
+	}
+	
+	public void UpdateStats(StatsData newStats)
+	{
+		Stats = new Stats(int.Parse(newStats.Wins), int.Parse(newStats.Mmr));
+		AccountProvider.ModifyStats(Login, Password, newStats);
 	}
 	
 	public static bool operator ==(Account a, Account b)
@@ -22,5 +36,12 @@ public struct Account
 	public static bool operator !=(Account a, Account b)
 	{
 		return !(a == b);
+	}
+	
+	public void AddWin()
+	{
+		Stats stats = new Stats(Stats.Wins + 1, Stats.MMR);
+		Stats = stats;
+		AccountProvider.ModifyStats(Login, Password, stats.ToStatsData());
 	}
 }

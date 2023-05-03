@@ -1,3 +1,4 @@
+using SeaBattle.Account.Providers;
 using SeaBattle.Core.Types;
 using SeaBattle.Players;
 using SeaBattle.Players.Inputs;
@@ -51,7 +52,24 @@ public class Menu
 		PlayerType playerType = (PlayerType) int.Parse(playerT);
 		
 		Console.Write("Player name: ");
-		string playerName = Console.ReadLine () ?? "Player " + (number + 1);
+		string playerName = Console.ReadLine ();
+		if (string.IsNullOrEmpty(playerName))
+			playerName = "Player " + (number + 1);
+		
+		// check if player with this name already exists
+		if (players.Exists (p => p.GetName () == playerName))
+		{
+			Console.WriteLine("Player with this name already exists!");
+			AskForPlayer (number);
+			return;
+		}
+
+		Account.Providers.Account account = Account.Providers.Account.GetAccount(new XMLProvider (), playerName, "2314");
+		Console.WriteLine($"Welcome, {account.Login}!");
+		Console.WriteLine($"Your stats: {account.Stats.Wins} wins, {account.Stats.MMR} MMR");
+
+		
+		
 		if (playerType == PlayerType.Bot)
 		{
 			// select bot difficulty
@@ -88,6 +106,9 @@ public class Menu
 		{
 			PlayerArrowInput input = new PlayerArrowInput();
 			player = new Player(new PlayerParams () { Type = PlayerType.Human, Name = playerName, Input = input });
+			
+			Console.WriteLine("Press any key to continue...");
+			Console.ReadKey();
 		}
 		players.Add(player);
 		Console.Clear();

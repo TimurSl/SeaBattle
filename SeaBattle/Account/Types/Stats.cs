@@ -9,4 +9,17 @@ public struct Stats
 	{
 		Wins = wins;
 	}
+	
+	public Stats(int wins, int mmr)
+	{
+		Wins = wins;
+	}
+	
+	public StatsData ToStatsData()
+	{
+		StatsData statsData = new StatsData();
+		statsData.Wins = Wins.ToString();
+		statsData.Mmr = MMR.ToString();
+		return statsData;
+	}
 }

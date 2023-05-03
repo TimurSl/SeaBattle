@@ -14,7 +14,7 @@ public class MediumBotInput : IInput
 		// try to find already hit (not miss) cell, and then try to find a cell around it (if no cells hit, then just random)
 		int attempts = 10;
 		bool found = false;
-		while (attacker.AttackMap.Grid[x,y].CellType != Configuration.CellType.Hit && attempts > 0)
+		while (attacker.AttackMap.Grid[x,y].CellType != Configuration.CellType.Hit && attempts > 0 && !attacker.AttackMap.Grid[x,y].InBounds ())
 		{
 			x = random.Next(Configuration.size);
 			y = random.Next(Configuration.size);

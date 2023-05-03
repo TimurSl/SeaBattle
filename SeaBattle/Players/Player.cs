@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using SeaBattle.Account.Providers;
 using SeaBattle.Cells;
 using SeaBattle.MapCreators.Types;
 using SeaBattle.Players.Inputs;
@@ -30,6 +31,7 @@ public class Player
 		DefenseMap = new Map(LevelCreationType.Random, useLastHit:true);
 		AttackMap = new Map(LevelCreationType.Empty, true);
 		Input = @params.Input;
+		Account = SeaBattle.Account.Providers.Account.GetAccount(new XMLProvider (), Name, "2314");
 	}
 	
 	public virtual void Attack(Player target, IntegerVector2 coordinates)
